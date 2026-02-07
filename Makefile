@@ -23,54 +23,54 @@ help: ## Display this help message
 
 build: ## Build all containers
 	@echo "$(GREEN)Building containers...$(NC)"
-	docker-compose build
+	docker compose build
 
 build-no-cache: ## Build all containers without cache
 	@echo "$(GREEN)Building containers (no cache)...$(NC)"
-	docker-compose build --no-cache
+	docker compose build --no-cache
 
 up: ## Start all containers
 	@echo "$(GREEN)Starting containers...$(NC)"
-	docker-compose up
+	docker compose up
 
 up-build: ## Build and start all containers
 	@echo "$(GREEN)Building and starting containers...$(NC)"
-	docker-compose up --build
+	docker compose up --build
 
 up-d: ## Start all containers in background
 	@echo "$(GREEN)Starting containers in background...$(NC)"
-	docker-compose up -d
+	docker compose up -d
 
 down: ## Stop and remove all containers
 	@echo "$(YELLOW)Stopping containers...$(NC)"
-	docker-compose down
+	docker compose down
 
 down-v: ## Stop containers and remove volumes (WARNING: deletes database!)
 	@echo "$(RED)Stopping containers and removing volumes...$(NC)"
 	@read -p "This will delete the database. Are you sure? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		docker-compose down -v; \
+		docker compose down -v; \
 	fi
 
 restart: ## Restart all containers
 	@echo "$(YELLOW)Restarting containers...$(NC)"
-	docker-compose restart
+	docker compose restart
 
 restart-app: ## Restart only the app container
 	@echo "$(YELLOW)Restarting app container...$(NC)"
-	docker-compose restart app
+	docker compose restart app
 
 ##@ Logs and Monitoring
 
 logs: ## Show logs from all containers
-	docker-compose logs -f
+	docker compose logs -f
 
 logs-app: ## Show logs from app container only
-	docker-compose logs -f app
+	docker compose logs -f app
 
 logs-postgres: ## Show logs from postgres container only
-	docker-compose logs -f postgres
+	docker compose logs -f postgres
 
 logs-backend: ## Show backend application logs
 	@echo "$(GREEN)Showing backend logs (Ctrl+C to exit)...$(NC)"
@@ -140,7 +140,7 @@ test-nginx: ## Test nginx configuration
 
 clean: ## Remove all stopped containers and unused images
 	@echo "$(YELLOW)Cleaning up...$(NC)"
-	docker-compose down
+	docker compose down
 	docker system prune -f
 	@echo "$(GREEN)Cleanup complete!$(NC)"
 
@@ -149,7 +149,7 @@ clean-all: ## Remove everything including volumes (WARNING: deletes database!)
 	@read -p "Are you sure? [y/N] " -n 1 -r; \
 	echo; \
 	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
-		docker-compose down -v; \
+		docker compose down -v; \
 		docker system prune -af; \
 		echo "$(GREEN)Full cleanup complete!$(NC)"; \
 	fi
@@ -165,14 +165,14 @@ reset: ## Complete reset (rebuild everything)
 
 prod-deploy: ## Deploy for production (builds and starts in background)
 	@echo "$(GREEN)Deploying for production...$(NC)"
-	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 	@echo "$(GREEN)Production deployment complete!$(NC)"
 
 prod-logs: ## Show production logs
-	docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f
 
 prod-down: ## Stop production deployment
-	docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
+	docker compose -f docker-compose.yml -f docker-compose.prod.yml down
 
 ##@ Quick Actions
 
@@ -212,6 +212,6 @@ info: ## Show container information
 version: ## Show version information
 	@echo "$(GREEN)LDPv2 Version Information$(NC)"
 	@echo "Docker:         $$(docker --version)"
-	@echo "Docker Compose: $$(docker-compose --version)"
+	@echo "Docker Compose: $$(docker compose version)"
 	@echo "Java (in container): $$(docker exec ldpv2-app java -version 2>&1 | head -n 1 || echo 'Not running')"
 	@echo "Node (build):   $$(node --version 2>/dev/null || echo 'Not available')"
