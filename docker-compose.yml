@@ -1,3 +1,4 @@
+
 services:
   # PostgreSQL Database (separate container)
   postgres:
