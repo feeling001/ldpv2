@@ -2,6 +2,8 @@
 
 Complete implementation of Story 0 (Walking Skeleton) with Spring Boot backend and Angular 18 frontend.
 
+
+
 ## 📁 Project Structure
 
 ```
