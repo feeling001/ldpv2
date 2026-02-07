@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="initial-data" author="ldpv2-team">
+        
+        <!-- Insert default admin user -->
+        <!-- Password: admin123 (hashed with BCrypt) -->
+        <insert tableName="users">
+            <column name="username" value="admin"/>
+            <column name="password" value="$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"/>
+            <column name="email" value="admin@ldpv2.com"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <!-- Insert sample environments -->
+        <insert tableName="environment">
+            <column name="name" value="PROD-EU"/>
+            <column name="description" value="Production environment for Europe"/>
+            <column name="is_production" valueBoolean="true"/>
+            <column name="criticality_level" valueNumeric="5"/>
+        </insert>
+
+        <insert tableName="environment">
+            <column name="name" value="PROD-US"/>
+            <column name="description" value="Production environment for United States"/>
+            <column name="is_production" valueBoolean="true"/>
+            <column name="criticality_level" valueNumeric="5"/>
+        </insert>
+
+        <insert tableName="environment">
+            <column name="name" value="INT"/>
+            <column name="description" value="Integration testing environment"/>
+            <column name="is_production" valueBoolean="false"/>
+            <column name="criticality_level" valueNumeric="3"/>
+        </insert>
+
+        <insert tableName="environment">
+            <column name="name" value="DEV"/>
+            <column name="description" value="Development environment"/>
+            <column name="is_production" valueBoolean="false"/>
+            <column name="criticality_level" valueNumeric="1"/>
+        </insert>
+        
+    </changeSet>
+    
+</databaseChangeLog>
