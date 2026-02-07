@@ -11,7 +11,8 @@
         <!-- Password: admin123 (hashed with BCrypt) -->
         <insert tableName="users">
             <column name="username" value="admin"/>
-            <column name="password" value="$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"/>
+           <!-- <column name="password" value="$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"/>-->
+            <column name="password" value="$2a$12$ZDflpzoNCyt/hDu9PyMqE.jinzhLtQ8Cjc/NgvXU7BIxni.SH2PnW"/>
             <column name="email" value="admin@ldpv2.com"/>
             <column name="role" value="ADMIN"/>
         </insert>
