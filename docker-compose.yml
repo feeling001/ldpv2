@@ -1,6 +1,5 @@
-version: '3.8'
-
 services:
+  # PostgreSQL Database (separate container)
   postgres:
     image: postgres:16-alpine
     container_name: ldpv2-postgres
@@ -19,44 +18,46 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
-  backend:
+  # Unified Application Container (Frontend + Backend + Nginx)
+  app:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
-    container_name: ldpv2-backend
+    container_name: ldpv2-app
     depends_on:
       postgres:
         condition: service_healthy
     environment:
+      # Database configuration
       DB_HOST: postgres
       DB_USERNAME: ldpv2_user
       DB_PASSWORD: ldpv2_password
-      JWT_SECRET: your-secret-key-change-in-production-minimum-512-bits-for-hs512-algorithm
-    networks:
-      - ldpv2-network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "/api/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile.app
-    container_name: ldpv2-app
-    depends_on:
-      backend:
-        condition: service_healthy
+      # JWT configuration
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production-minimum-512-bits-for-hs512-algorithm}
+      # Java options
+      JAVA_OPTS: "-Xms256m -Xmx512m"
     ports:
       - "80:80"
     networks:
       - ldpv2-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    restart: unless-stopped
+    # Optional: Mount logs directory for easier debugging
+    volumes:
+      - app_logs:/var/log/supervisor
 
 volumes:
   postgres_data:
+    driver: local
+  app_logs:
+    driver: local
 
 networks:
   ldpv2-network:
