@@ -33,27 +33,30 @@ services:
       DB_USERNAME: ldpv2_user
       DB_PASSWORD: ldpv2_password
       JWT_SECRET: your-secret-key-change-in-production-minimum-512-bits-for-hs512-algorithm
+    ports:
+      - "8081:8080"
     networks:
       - ldpv2-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "/api/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 60s
+      start_period: 40s
 
-  app:
+  frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.app
-    container_name: ldpv2-app
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ldpv2-frontend
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     ports:
-      - "80:80"
+      - "4200:80"
     networks:
       - ldpv2-network
+    environment:
+      API_URL: http://backend:8081/api
 
 volumes:
   postgres_data:

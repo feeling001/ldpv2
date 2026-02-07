@@ -1,0 +1,60 @@
+<div class="container">
+  <h1>{{ isEditMode ? 'Edit Environment' : 'Create New Environment' }}</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Name *</label>
+      <input 
+        id="name" 
+        type="text" 
+        formControlName="name"
+        [class.error]="form.get('name')?.invalid && form.get('name')?.touched"
+      />
+      <div class="error-message" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+        Name is required (max 100 characters)
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea 
+        id="description" 
+        formControlName="description"
+        rows="4"
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" formControlName="isProduction" />
+        Production Environment
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="criticalityLevel">Criticality Level (1-5)</label>
+      <input 
+        id="criticalityLevel" 
+        type="number" 
+        formControlName="criticalityLevel"
+        min="1"
+        max="5"
+        [class.error]="form.get('criticalityLevel')?.invalid && form.get('criticalityLevel')?.touched"
+      />
+      <div class="error-message" *ngIf="form.get('criticalityLevel')?.invalid && form.get('criticalityLevel')?.touched">
+        Criticality level must be between 1 and 5
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-secondary">Cancel</button>
+      <button type="submit" [disabled]="form.invalid || loading" class="btn-primary">
+        {{ loading ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  </form>
+</div>

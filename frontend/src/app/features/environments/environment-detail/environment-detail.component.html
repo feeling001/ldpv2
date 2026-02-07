@@ -1,0 +1,45 @@
+<div class="container">
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="environment && !loading" class="detail-card">
+    <div class="header">
+      <h1>{{ environment.name }}</h1>
+      <div class="actions">
+        <button (click)="edit()" class="btn-primary">Edit</button>
+        <button (click)="delete()" class="btn-danger">Delete</button>
+      </div>
+    </div>
+
+    <div class="details">
+      <div class="detail-row">
+        <label>Description:</label>
+        <span>{{ environment.description || '-' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Production:</label>
+        <span [class.badge-prod]="environment.isProduction" [class.badge-non-prod]="!environment.isProduction">
+          {{ environment.isProduction ? 'Yes' : 'No' }}
+        </span>
+      </div>
+
+      <div class="detail-row">
+        <label>Criticality Level:</label>
+        <span>{{ environment.criticalityLevel || '-' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Created:</label>
+        <span>{{ environment.createdAt | date:'medium' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Updated:</label>
+        <span>{{ environment.updatedAt | date:'medium' }}</span>
+      </div>
+    </div>
+
+    <button (click)="back()" class="btn-secondary">Back to List</button>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="header">
+    <h1>Environments</h1>
+    <button (click)="createNew()" class="btn-primary">Create New Environment</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && environments.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Production</th>
+          <th>Criticality</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let env of environments">
+          <td>{{ env.name }}</td>
+          <td>{{ env.description || '-' }}</td>
+          <td>
+            <span [class.badge-prod]="env.isProduction" [class.badge-non-prod]="!env.isProduction">
+              {{ env.isProduction ? 'Yes' : 'No' }}
+            </span>
+          </td>
+          <td>{{ env.criticalityLevel || '-' }}</td>
+          <td class="actions">
+            <button (click)="viewDetails(env.id)" class="btn-sm">View</button>
+            <button (click)="edit(env.id)" class="btn-sm">Edit</button>
+            <button (click)="delete(env.id)" class="btn-sm btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && environments.length === 0" class="empty">
+    No environments found. Click "Create New Environment" to get started.
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button (click)="previousPage()" [disabled]="page === 0">Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next</button>
+  </div>
+</div>
