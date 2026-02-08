@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="header">
+    <h1>Business Units</h1>
+    <button (click)="createNew()" class="btn-primary">Create New Business Unit</button>
+  </div>
+
+  <div class="search-bar">
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange($event)"
+      placeholder="Search business units..."
+      class="search-input"
+    />
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && businessUnits.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let bu of businessUnits">
+          <td><strong>{{ bu.name }}</strong></td>
+          <td>{{ bu.description || '-' }}</td>
+          <td>{{ bu.createdAt | date:'short' }}</td>
+          <td class="actions">
+            <button (click)="viewDetails(bu.id)" class="btn-sm">View</button>
+            <button (click)="edit(bu.id)" class="btn-sm">Edit</button>
+            <button (click)="delete(bu.id)" class="btn-sm btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && businessUnits.length === 0 && !searchQuery" class="empty">
+    No business units found. Click "Create New Business Unit" to get started.
+  </div>
+
+  <div *ngIf="!loading && businessUnits.length === 0 && searchQuery" class="empty">
+    No business units match your search "{{ searchQuery }}".
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button (click)="previousPage()" [disabled]="page === 0">Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }} ({{ totalElements }} total)</span>
+    <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next</button>
+  </div>
+</div>

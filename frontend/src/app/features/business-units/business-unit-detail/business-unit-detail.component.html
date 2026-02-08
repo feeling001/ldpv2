@@ -1,0 +1,38 @@
+<div class="container">
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="businessUnit && !loading" class="detail-card">
+    <div class="header">
+      <h1>{{ businessUnit.name }}</h1>
+      <div class="actions">
+        <button (click)="edit()" class="btn-primary">Edit</button>
+        <button (click)="delete()" class="btn-danger">Delete</button>
+      </div>
+    </div>
+
+    <div class="details">
+      <div class="detail-row">
+        <label>Name:</label>
+        <span>{{ businessUnit.name }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Description:</label>
+        <span>{{ businessUnit.description || '-' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Created:</label>
+        <span>{{ businessUnit.createdAt | date:'medium' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Last Updated:</label>
+        <span>{{ businessUnit.updatedAt | date:'medium' }}</span>
+      </div>
+    </div>
+
+    <button (click)="back()" class="btn-secondary">Back to List</button>
+  </div>
+</div>

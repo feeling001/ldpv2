@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="003-create-business-unit-table" author="ldpv2-team">
+        
+        <!-- Create business_unit table -->
+        <createTable tableName="business_unit">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Create index on name for search performance -->
+        <createIndex tableName="business_unit" indexName="idx_business_unit_name">
+            <column name="name"/>
+        </createIndex>
+
+        <!-- Insert sample data for testing -->
+        <insert tableName="business_unit">
+            <column name="name" value="Digital Services"/>
+            <column name="description" value="Digital transformation initiatives and online services"/>
+        </insert>
+
+        <insert tableName="business_unit">
+            <column name="name" value="Operations"/>
+            <column name="description" value="Core business operations and support"/>
+        </insert>
+
+        <insert tableName="business_unit">
+            <column name="name" value="Finance"/>
+            <column name="description" value="Financial services and accounting systems"/>
+        </insert>
+
+        <insert tableName="business_unit">
+            <column name="name" value="Human Resources"/>
+            <column name="description" value="HR management and employee services"/>
+        </insert>
+        
+    </changeSet>
+    
+</databaseChangeLog>

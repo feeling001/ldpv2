@@ -4,12 +4,38 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/environments',
+    redirectTo: '/business-units',
     pathMatch: 'full'
   },
   {
     path: 'login',
     loadComponent: () => import('./core/auth/login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'business-units',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/business-units/business-unit-list/business-unit-list.component')
+          .then(m => m.BusinessUnitListComponent)
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./features/business-units/business-unit-form/business-unit-form.component')
+          .then(m => m.BusinessUnitFormComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./features/business-units/business-unit-detail/business-unit-detail.component')
+          .then(m => m.BusinessUnitDetailComponent)
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () => import('./features/business-units/business-unit-form/business-unit-form.component')
+          .then(m => m.BusinessUnitFormComponent)
+      }
+    ]
   },
   {
     path: 'environments',
