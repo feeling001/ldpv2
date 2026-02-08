@@ -29,6 +29,14 @@ export interface Contact {
   updatedAt: Date;
 }
 
+export interface ContactResponse {
+  id: string;
+  contactRole: ContactRole;
+  persons: PersonInContact[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface CreatePersonRequest {
   firstName: string;
   lastName: string;
