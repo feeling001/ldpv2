@@ -13,5 +13,6 @@
     <include file="db/changelog/v1.0/005-create-contact-tables.xml"/>
     <include file="db/changelog/v1.0/006-create-version-table.xml"/>
     <include file="db/changelog/v1.0/007-create-deployment-table.xml"/>
+    <include file="db/changelog/v1.0/008-create-application-contact-table.xml"/>
     
 </databaseChangeLog>

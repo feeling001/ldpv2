@@ -1,3 +1,5 @@
+import { ContactResponse } from './contact.model';
+
 export enum ApplicationStatus {
   IDEA = 'IDEA',
   IN_DEVELOPMENT = 'IN_DEVELOPMENT',
@@ -34,4 +36,13 @@ export interface UpdateApplicationRequest {
   businessUnitId?: string;
   endOfLifeDate?: Date;
   endOfSupportDate?: Date;
+}
+
+export interface ApplicationContactResponse {
+  applicationId: string;
+  contact: ContactResponse;
+}
+
+export interface AddContactToApplicationRequest {
+  contactId: string;
 }

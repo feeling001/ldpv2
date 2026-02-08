@@ -1,23 +1,28 @@
 package com.ldpv2.service;
 
 import com.ldpv2.domain.entity.Application;
+import com.ldpv2.domain.entity.ApplicationContact;
 import com.ldpv2.domain.entity.BusinessUnit;
+import com.ldpv2.domain.entity.Contact;
 import com.ldpv2.domain.enums.ApplicationStatus;
 import com.ldpv2.dto.request.CreateApplicationRequest;
 import com.ldpv2.dto.request.UpdateApplicationRequest;
-import com.ldpv2.dto.response.ApplicationResponse;
-import com.ldpv2.dto.response.BusinessUnitSummaryResponse;
+import com.ldpv2.dto.response.*;
 import com.ldpv2.exception.BadRequestException;
 import com.ldpv2.exception.ResourceNotFoundException;
+import com.ldpv2.repository.ApplicationContactRepository;
 import com.ldpv2.repository.ApplicationRepository;
 import com.ldpv2.repository.BusinessUnitRepository;
+import com.ldpv2.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ApplicationService {
@@ -28,14 +33,18 @@ public class ApplicationService {
     @Autowired
     private BusinessUnitRepository businessUnitRepository;
 
+    @Autowired
+    private ContactRepository contactRepository;
+
+    @Autowired
+    private ApplicationContactRepository applicationContactRepository;
+
     @Transactional
     public ApplicationResponse create(CreateApplicationRequest request) {
-        // Validate business unit exists
         BusinessUnit businessUnit = businessUnitRepository.findById(request.getBusinessUnitId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Business unit not found with id: " + request.getBusinessUnitId()));
         
-        // Validate dates if both are provided
         if (request.getEndOfSupportDate() != null && request.getEndOfLifeDate() != null) {
             if (request.getEndOfSupportDate().isAfter(request.getEndOfLifeDate())) {
                 throw new BadRequestException(
@@ -88,7 +97,6 @@ public class ApplicationService {
             application.setEndOfSupportDate(request.getEndOfSupportDate());
         }
         
-        // Validate dates if both are set
         if (application.getEndOfSupportDate() != null && application.getEndOfLifeDate() != null) {
             if (application.getEndOfSupportDate().isAfter(application.getEndOfLifeDate())) {
                 throw new BadRequestException(
@@ -145,6 +153,52 @@ public class ApplicationService {
         applicationRepository.deleteById(id);
     }
 
+    @Transactional
+    public ApplicationContactResponse addContact(UUID applicationId, UUID contactId) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Application not found with id: " + applicationId));
+
+        Contact contact = contactRepository.findById(contactId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Contact not found with id: " + contactId));
+
+        application.addContact(contact);
+        applicationRepository.save(application);
+
+        return new ApplicationContactResponse(applicationId, mapContactToResponse(contact));
+    }
+
+    @Transactional
+    public void removeContact(UUID applicationId, UUID contactId) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Application not found with id: " + applicationId));
+
+        Contact contact = contactRepository.findById(contactId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Contact not found with id: " + contactId));
+
+        application.removeContact(contact);
+        applicationRepository.save(application);
+    }
+
+    public List<ApplicationContactResponse> getApplicationContacts(UUID applicationId) {
+        if (!applicationRepository.existsById(applicationId)) {
+            throw new ResourceNotFoundException("Application not found with id: " + applicationId);
+        }
+
+        List<ApplicationContact> appContacts = applicationContactRepository
+                .findByApplicationIdWithDetails(applicationId);
+
+        return appContacts.stream()
+                .map(ac -> new ApplicationContactResponse(
+                        applicationId,
+                        mapContactToResponse(ac.getContact())
+                ))
+                .collect(Collectors.toList());
+    }
+
     private ApplicationResponse mapToResponse(Application application) {
         BusinessUnitSummaryResponse buSummary = new BusinessUnitSummaryResponse(
             application.getBusinessUnit().getId(),
@@ -161,6 +215,39 @@ public class ApplicationService {
             application.getEndOfSupportDate(),
             application.getCreatedAt(),
             application.getUpdatedAt()
+        );
+    }
+
+    private ContactResponse mapContactToResponse(Contact contact) {
+        ContactRoleResponse roleResponse = new ContactRoleResponse(
+                contact.getContactRole().getId(),
+                contact.getContactRole().getRoleName(),
+                contact.getContactRole().getDescription(),
+                contact.getContactRole().getCreatedAt(),
+                contact.getContactRole().getUpdatedAt()
+        );
+
+        List<PersonInContactResponse> personsResponse = contact.getContactPersons().stream()
+                .map(cp -> {
+                    PersonResponse personResponse = new PersonResponse(
+                            cp.getPerson().getId(),
+                            cp.getPerson().getFirstName(),
+                            cp.getPerson().getLastName(),
+                            cp.getPerson().getEmail(),
+                            cp.getPerson().getPhone(),
+                            cp.getPerson().getCreatedAt(),
+                            cp.getPerson().getUpdatedAt()
+                    );
+                    return new PersonInContactResponse(personResponse, cp.isPrimary());
+                })
+                .collect(Collectors.toList());
+
+        return new ContactResponse(
+                contact.getId(),
+                roleResponse,
+                personsResponse,
+                contact.getCreatedAt(),
+                contact.getUpdatedAt()
         );
     }
 }

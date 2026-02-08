@@ -2,54 +2,117 @@
   <div *ngIf="loading" class="loading">Loading...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
 
-  <div *ngIf="application && !loading" class="detail-card">
+  <div *ngIf="application && !loading" class="detail-page">
+    <!-- Header -->
     <div class="header">
-      <h1>{{ application.name }}</h1>
-      <div class="actions">
-        <button (click)="edit()" class="btn-primary">Edit</button>
-        <button (click)="delete()" class="btn-danger">Delete</button>
-      </div>
-    </div>
-
-    <div class="details">
-      <div class="detail-row">
-        <label>Status:</label>
+      <div class="header-left">
+        <h1>{{ application.name }}</h1>
         <span class="status-badge" [ngClass]="getStatusClass(application.status)">
           {{ getStatusDisplay(application.status) }}
         </span>
       </div>
-
-      <div class="detail-row">
-        <label>Description:</label>
-        <span>{{ application.description || '-' }}</span>
-      </div>
-
-      <div class="detail-row">
-        <label>Business Unit:</label>
-        <span>{{ application.businessUnit.name }}</span>
-      </div>
-
-      <div class="detail-row">
-        <label>End of Support Date:</label>
-        <span>{{ application.endOfSupportDate ? (application.endOfSupportDate | date:'mediumDate') : '-' }}</span>
-      </div>
-
-      <div class="detail-row">
-        <label>End of Life Date:</label>
-        <span>{{ application.endOfLifeDate ? (application.endOfLifeDate | date:'mediumDate') : '-' }}</span>
-      </div>
-
-      <div class="detail-row">
-        <label>Created:</label>
-        <span>{{ application.createdAt | date:'medium' }}</span>
-      </div>
-
-      <div class="detail-row">
-        <label>Last Updated:</label>
-        <span>{{ application.updatedAt | date:'medium' }}</span>
+      <div class="header-actions">
+        <button (click)="edit()" class="btn-primary">Edit</button>
+        <button (click)="delete()" class="btn-danger">Delete</button>
+        <button (click)="back()" class="btn-secondary">Back</button>
       </div>
     </div>
 
-    <button (click)="back()" class="btn-secondary">Back to List</button>
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'overview'"
+        (click)="setActiveTab('overview')">
+        📋 Overview
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'versions'"
+        (click)="setActiveTab('versions')">
+        📦 Versions
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'deployments'"
+        (click)="setActiveTab('deployments')">
+        🚀 Deployments
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'contacts'"
+        (click)="setActiveTab('contacts')">
+        👥 Contacts
+      </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Overview Tab -->
+      <div *ngIf="activeTab === 'overview'" class="overview-tab">
+        <div class="detail-card">
+          <div class="detail-row">
+            <label>Description:</label>
+            <span>{{ application.description || '-' }}</span>
+          </div>
+
+          <div class="detail-row">
+            <label>Business Unit:</label>
+            <span>{{ application.businessUnit.name }}</span>
+          </div>
+
+          <div class="detail-row">
+            <label>Status:</label>
+            <span class="status-badge" [ngClass]="getStatusClass(application.status)">
+              {{ getStatusDisplay(application.status) }}
+            </span>
+          </div>
+
+          <div class="detail-row">
+            <label>End of Support Date:</label>
+            <span>{{ application.endOfSupportDate ? (application.endOfSupportDate | date:'mediumDate') : '-' }}</span>
+          </div>
+
+          <div class="detail-row">
+            <label>End of Life Date:</label>
+            <span>{{ application.endOfLifeDate ? (application.endOfLifeDate | date:'mediumDate') : '-' }}</span>
+          </div>
+
+          <div class="detail-row">
+            <label>Created:</label>
+            <span>{{ application.createdAt | date:'medium' }}</span>
+          </div>
+
+          <div class="detail-row">
+            <label>Last Updated:</label>
+            <span>{{ application.updatedAt | date:'medium' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Versions Tab -->
+      <div *ngIf="activeTab === 'versions'">
+        <app-version-list 
+          [applicationId]="application.id" 
+          [applicationName]="application.name">
+        </app-version-list>
+      </div>
+
+      <!-- Deployments Tab -->
+      <div *ngIf="activeTab === 'deployments'">
+        <app-application-deployments 
+          [applicationId]="application.id"
+          [applicationName]="application.name">
+        </app-application-deployments>
+      </div>
+
+      <!-- Contacts Tab -->
+      <div *ngIf="activeTab === 'contacts'">
+        <app-application-contacts 
+          [applicationId]="application.id"
+          [applicationName]="application.name">
+        </app-application-contacts>
+      </div>
+    </div>
   </div>
 </div>

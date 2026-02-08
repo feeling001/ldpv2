@@ -1,8 +1,10 @@
 package com.ldpv2.controller;
 
 import com.ldpv2.domain.enums.ApplicationStatus;
+import com.ldpv2.dto.request.AddContactToApplicationRequest;
 import com.ldpv2.dto.request.CreateApplicationRequest;
 import com.ldpv2.dto.request.UpdateApplicationRequest;
+import com.ldpv2.dto.response.ApplicationContactResponse;
 import com.ldpv2.dto.response.ApplicationResponse;
 import com.ldpv2.service.ApplicationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -116,6 +119,33 @@ public class ApplicationController {
     @Operation(summary = "Delete application", description = "Delete an application")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         applicationService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ========== CONTACTS MANAGEMENT ==========
+
+    @GetMapping("/{applicationId}/contacts")
+    @Operation(summary = "Get application contacts", description = "Get all contacts for an application")
+    public ResponseEntity<List<ApplicationContactResponse>> getContacts(@PathVariable UUID applicationId) {
+        List<ApplicationContactResponse> response = applicationService.getApplicationContacts(applicationId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{applicationId}/contacts")
+    @Operation(summary = "Add contact to application", description = "Associate a contact with an application")
+    public ResponseEntity<ApplicationContactResponse> addContact(
+            @PathVariable UUID applicationId,
+            @Valid @RequestBody AddContactToApplicationRequest request) {
+        ApplicationContactResponse response = applicationService.addContact(applicationId, request.getContactId());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{applicationId}/contacts/{contactId}")
+    @Operation(summary = "Remove contact from application", description = "Remove a contact from an application")
+    public ResponseEntity<Void> removeContact(
+            @PathVariable UUID applicationId,
+            @PathVariable UUID contactId) {
+        applicationService.removeContact(applicationId, contactId);
         return ResponseEntity.noContent().build();
     }
 }

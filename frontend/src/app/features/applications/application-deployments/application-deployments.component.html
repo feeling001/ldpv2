@@ -1,0 +1,45 @@
+<div class="deployments-container">
+  <div class="header">
+    <h3>Deployment History</h3>
+    <button (click)="recordDeployment()" class="btn-primary">Record New Deployment</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading deployments...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && deployments.length > 0" class="deployments-list">
+    <div class="deployment-item" *ngFor="let deployment of deployments">
+      <div class="deployment-main">
+        <div class="deployment-version">
+          <strong>Version {{ deployment.version.versionIdentifier }}</strong>
+        </div>
+        <div class="deployment-environment">
+          <span 
+            class="env-badge" 
+            [class.env-prod]="deployment.environment.isProduction"
+            [class.env-non-prod]="!deployment.environment.isProduction">
+            {{ deployment.environment.name }}
+          </span>
+        </div>
+      </div>
+      <div class="deployment-meta">
+        <div>{{ deployment.deploymentDate | date:'medium' }}</div>
+        <div class="time-ago">{{ getDaysAgo(deployment.deploymentDate) }} days ago</div>
+        <div *ngIf="deployment.deployedBy">by {{ deployment.deployedBy }}</div>
+      </div>
+      <div class="deployment-actions">
+        <button (click)="viewDetails(deployment.id)" class="btn-sm">Details</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && deployments.length === 0" class="empty">
+    No deployments recorded for this application yet.
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button (click)="previousPage()" [disabled]="page === 0">Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next</button>
+  </div>
+</div>

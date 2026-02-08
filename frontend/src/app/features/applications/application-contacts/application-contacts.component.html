@@ -1,0 +1,69 @@
+<div class="contacts-container">
+  <div class="header">
+    <h3>Application Contacts</h3>
+    <button (click)="openAddDialog()" class="btn-primary">Add Contact</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading contacts...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && contacts.length > 0" class="contacts-grid">
+    <div class="contact-card" *ngFor="let appContact of contacts">
+      <div class="contact-header">
+        <h4>{{ appContact.contact.contactRole.roleName }}</h4>
+        <button (click)="removeContact(appContact.contact.id)" class="btn-remove">×</button>
+      </div>
+      <div class="contact-body">
+        <div class="primary-person">
+          <strong>Primary:</strong> {{ getPrimaryPerson(appContact.contact) }}
+        </div>
+        <div class="person-count">
+          {{ appContact.contact.persons.length }} person(s)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && contacts.length === 0" class="empty">
+    No contacts assigned to this application yet.
+  </div>
+
+  <!-- Add Contact Dialog -->
+  <div *ngIf="showAddDialog" class="dialog-overlay" (click)="closeAddDialog()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h3>Add Contact</h3>
+        <button (click)="closeAddDialog()" class="btn-close">×</button>
+      </div>
+      
+      <div class="dialog-body">
+        <div class="filter-section">
+          <label>Filter by role:</label>
+          <select [(ngModel)]="selectedContactRole" class="filter-select">
+            <option value="">All Roles</option>
+            <option *ngFor="let role of availableRoles" [value]="role.id">
+              {{ role.roleName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="contacts-list">
+          <div *ngIf="getFilteredContacts().length === 0" class="no-contacts">
+            No available contacts to add.
+          </div>
+          
+          <div 
+            class="contact-item" 
+            *ngFor="let contact of getFilteredContacts()"
+            (click)="addContact(contact.id)">
+            <div class="contact-info">
+              <strong>{{ contact.contactRole.roleName }}</strong>
+              <div class="contact-primary">{{ getPrimaryPerson(contact) }}</div>
+            </div>
+            <button class="btn-add">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

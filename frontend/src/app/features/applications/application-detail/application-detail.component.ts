@@ -3,11 +3,19 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApplicationService } from '../application.service';
 import { Application, ApplicationStatus } from '../../../shared/models/application.model';
+import { VersionListComponent } from '../../versions/version-list/version-list.component';
+import { ApplicationDeploymentsComponent } from '../application-deployments/application-deployments.component';
+import { ApplicationContactsComponent } from '../application-contacts/application-contacts.component';
 
 @Component({
   selector: 'app-application-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    VersionListComponent,
+    ApplicationDeploymentsComponent,
+    ApplicationContactsComponent
+  ],
   templateUrl: './application-detail.component.html',
   styleUrls: ['./application-detail.component.scss']
 })
@@ -15,6 +23,7 @@ export class ApplicationDetailComponent implements OnInit {
   application?: Application;
   loading = false;
   error = '';
+  activeTab: 'overview' | 'versions' | 'deployments' | 'contacts' = 'overview';
 
   constructor(
     private applicationService: ApplicationService,
@@ -24,6 +33,11 @@ export class ApplicationDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    const tab = this.route.snapshot.queryParamMap.get('tab');
+    if (tab && ['overview', 'versions', 'deployments', 'contacts'].includes(tab)) {
+      this.activeTab = tab as any;
+    }
+    
     if (id) {
       this.loadApplication(id);
     }
@@ -40,6 +54,15 @@ export class ApplicationDetailComponent implements OnInit {
         this.error = 'Failed to load application';
         this.loading = false;
       }
+    });
+  }
+
+  setActiveTab(tab: 'overview' | 'versions' | 'deployments' | 'contacts'): void {
+    this.activeTab = tab;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge'
     });
   }
 

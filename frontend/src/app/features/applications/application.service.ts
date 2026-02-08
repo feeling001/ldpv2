@@ -5,7 +5,9 @@ import {
   Application,
   ApplicationStatus,
   CreateApplicationRequest,
-  UpdateApplicationRequest
+  UpdateApplicationRequest,
+  ApplicationContactResponse,
+  AddContactToApplicationRequest
 } from '../../shared/models/application.model';
 import { Page } from '../../shared/models/environment.model';
 
@@ -67,5 +69,26 @@ export class ApplicationService {
 
   deleteApplication(id: string): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
+  }
+
+  // Contact management
+  getApplicationContacts(applicationId: string): Observable<ApplicationContactResponse[]> {
+    return this.http.get<ApplicationContactResponse[]>(
+      `${this.API_URL}/${applicationId}/contacts`
+    );
+  }
+
+  addContactToApplication(applicationId: string, contactId: string): Observable<ApplicationContactResponse> {
+    const request: AddContactToApplicationRequest = { contactId };
+    return this.http.post<ApplicationContactResponse>(
+      `${this.API_URL}/${applicationId}/contacts`,
+      request
+    );
+  }
+
+  removeContactFromApplication(applicationId: string, contactId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.API_URL}/${applicationId}/contacts/${contactId}`
+    );
   }
 }

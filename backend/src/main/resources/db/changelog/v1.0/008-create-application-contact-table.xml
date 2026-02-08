@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="008-create-application-contact-table" author="ldpv2-team">
+        
+        <createTable tableName="application_contact">
+            <column name="application_id" type="UUID">
+                <constraints nullable="false"
+                    foreignKeyName="fk_application_contact_app"
+                    references="application(id)"
+                    deleteCascade="true"/>
+            </column>
+            <column name="contact_id" type="UUID">
+                <constraints nullable="false"
+                    foreignKeyName="fk_application_contact_contact"
+                    references="contact(id)"
+                    deleteCascade="true"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="application_contact" 
+            columnNames="application_id, contact_id" 
+            constraintName="pk_application_contact"/>
+
+        <createIndex tableName="application_contact" indexName="idx_app_contact_application">
+            <column name="application_id"/>
+        </createIndex>
+
+        <createIndex tableName="application_contact" indexName="idx_app_contact_contact">
+            <column name="contact_id"/>
+        </createIndex>
+        
+    </changeSet>
+</databaseChangeLog>
