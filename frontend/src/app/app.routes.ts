@@ -67,6 +67,16 @@ export const routes: Routes = [
             path: ':id/edit',
             loadComponent: () => import('./features/applications/application-form/application-form.component')
               .then(m => m.ApplicationFormComponent)
+          },
+          {
+            path: ':applicationId/versions/new',
+            loadComponent: () => import('./features/versions/version-form/version-form.component')
+              .then(m => m.VersionFormComponent)
+          },
+          {
+            path: ':applicationId/versions/:versionId/edit',
+            loadComponent: () => import('./features/versions/version-form/version-form.component')
+              .then(m => m.VersionFormComponent)
           }
         ]
       },
@@ -92,6 +102,26 @@ export const routes: Routes = [
             path: ':id/edit',
             loadComponent: () => import('./features/environments/environment-form/environment-form.component')
               .then(m => m.EnvironmentFormComponent)
+          }
+        ]
+      },
+      {
+        path: 'deployments',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/deployments/deployment-list/deployment-list.component')
+              .then(m => m.DeploymentListComponent)
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/deployments/deployment-form/deployment-form.component')
+              .then(m => m.DeploymentFormComponent)
+          },
+          {
+            path: 'current',
+            loadComponent: () => import('./features/deployments/deployment-dashboard/deployment-dashboard.component')
+              .then(m => m.DeploymentDashboardComponent)
           }
         ]
       },

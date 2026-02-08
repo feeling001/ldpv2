@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="header">
+    <h1>Current Deployment State</h1>
+    <button (click)="recordDeployment()" class="btn-primary">Record Deployment</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading deployment state...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && getApplicationIds().length > 0" class="matrix-container">
+    <div class="legend">
+      <span class="legend-item">
+        <span class="legend-color cell-recent"></span> Recent (&lt; 30 days)
+      </span>
+      <span class="legend-item">
+        <span class="legend-color cell-moderate"></span> Moderate (30-90 days)
+      </span>
+      <span class="legend-item">
+        <span class="legend-color cell-old"></span> Old (&gt; 90 days)
+      </span>
+      <span class="legend-item">
+        <span class="legend-color cell-empty"></span> Not deployed
+      </span>
+    </div>
+
+    <div class="matrix-scroll">
+      <table class="deployment-matrix">
+        <thead>
+          <tr>
+            <th class="app-header">Application</th>
+            <th *ngFor="let envId of environmentIds" class="env-header">
+              {{ environmentNames.get(envId) }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let appId of getApplicationIds()">
+            <td class="app-name">{{ matrix[appId].applicationName }}</td>
+            <td *ngFor="let envId of environmentIds" 
+                [class]="getCellClass(getDeploymentForCell(appId, envId))"
+                class="deployment-cell">
+              <div *ngIf="getDeploymentForCell(appId, envId) as deployment" class="cell-content">
+                <div class="version">{{ deployment.version.versionIdentifier }}</div>
+                <div class="date">{{ deployment.deploymentDate | date:'shortDate' }}</div>
+                <div class="days-ago">{{ getDaysAgo(deployment.deploymentDate) }}d ago</div>
+              </div>
+              <div *ngIf="!getDeploymentForCell(appId, envId)" class="cell-content empty">
+                <span>-</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && getApplicationIds().length === 0" class="empty">
+    No deployments recorded yet.
+  </div>
+</div>

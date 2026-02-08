@@ -1,0 +1,144 @@
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  h1 { margin: 0; }
+}
+
+.btn-primary {
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover { background-color: #303f9f; }
+}
+
+.loading, .error, .empty {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.error { color: #f44336; }
+
+.legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+}
+
+.matrix-scroll {
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.deployment-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+
+  th, td {
+    padding: 1rem;
+    border: 1px solid #ddd;
+  }
+
+  thead {
+    background-color: #f5f5f5;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    th {
+      font-weight: 600;
+      text-align: center;
+    }
+  }
+
+  .app-header {
+    text-align: left;
+    min-width: 200px;
+  }
+
+  .app-name {
+    font-weight: 600;
+    background-color: #fafafa;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+  }
+
+  .deployment-cell {
+    text-align: center;
+    min-width: 150px;
+    
+    &.cell-recent {
+      background-color: #e8f5e9;
+    }
+    
+    &.cell-moderate {
+      background-color: #fff9c4;
+    }
+    
+    &.cell-old {
+      background-color: #ffebee;
+    }
+    
+    &.cell-empty {
+      background-color: #f5f5f5;
+    }
+  }
+
+  .cell-content {
+    .version {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.25rem;
+    }
+
+    .date {
+      font-size: 0.875rem;
+      color: #666;
+    }
+
+    .days-ago {
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 0.25rem;
+    }
+
+    &.empty span {
+      color: #999;
+    }
+  }
+}

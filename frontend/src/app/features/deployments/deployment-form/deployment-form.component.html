@@ -1,0 +1,100 @@
+<div class="container">
+  <h1>Record New Deployment</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="applicationId">Application *</label>
+      <select 
+        id="applicationId" 
+        formControlName="applicationId"
+        [class.error]="form.get('applicationId')?.invalid && form.get('applicationId')?.touched">
+        <option value="">Select an application</option>
+        <option *ngFor="let app of applications" [value]="app.id">
+          {{ app.name }}
+        </option>
+      </select>
+      <div class="error-message" *ngIf="form.get('applicationId')?.invalid && form.get('applicationId')?.touched">
+        Application is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="versionId">Version *</label>
+      <select 
+        id="versionId" 
+        formControlName="versionId"
+        [disabled]="!form.value.applicationId"
+        [class.error]="form.get('versionId')?.invalid && form.get('versionId')?.touched">
+        <option value="">{{ form.value.applicationId ? 'Select a version' : 'Select application first' }}</option>
+        <option *ngFor="let version of versions" [value]="version.id">
+          {{ version.versionIdentifier }} (Released: {{ version.releaseDate | date:'shortDate' }})
+        </option>
+      </select>
+      <div class="error-message" *ngIf="form.get('versionId')?.invalid && form.get('versionId')?.touched">
+        Version is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="environmentId">Environment *</label>
+      <select 
+        id="environmentId" 
+        formControlName="environmentId"
+        [class.error]="form.get('environmentId')?.invalid && form.get('environmentId')?.touched">
+        <option value="">Select an environment</option>
+        <option *ngFor="let env of environments" [value]="env.id">
+          {{ env.name }} {{ env.isProduction ? '(PRODUCTION)' : '' }}
+        </option>
+      </select>
+      <div class="error-message" *ngIf="form.get('environmentId')?.invalid && form.get('environmentId')?.touched">
+        Environment is required
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="deploymentDate">Deployment Date & Time *</label>
+        <input 
+          id="deploymentDate" 
+          type="datetime-local" 
+          formControlName="deploymentDate"
+          [class.error]="form.get('deploymentDate')?.invalid && form.get('deploymentDate')?.touched"
+        />
+        <div class="error-message" *ngIf="form.get('deploymentDate')?.invalid && form.get('deploymentDate')?.touched">
+          Deployment date is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="deployedBy">Deployed By</label>
+        <input 
+          id="deployedBy" 
+          type="text" 
+          formControlName="deployedBy"
+          placeholder="Username or system"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="notes">Notes</label>
+      <textarea 
+        id="notes" 
+        formControlName="notes"
+        rows="4"
+        placeholder="Any additional notes about this deployment..."
+      ></textarea>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-secondary">Cancel</button>
+      <button type="submit" [disabled]="form.invalid || loading" class="btn-primary">
+        {{ loading ? 'Recording...' : 'Record Deployment' }}
+      </button>
+    </div>
+  </form>
+</div>

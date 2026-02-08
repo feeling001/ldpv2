@@ -11,7 +11,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      #- postgres_data:/var/lib/postgresql/data
+      - /srv/ldpv2_db:/var/lib/postgresql/data
     networks:
       - ldpv2-network
     healthcheck:
@@ -52,8 +53,9 @@ services:
     restart: unless-stopped
     # Optional: Mount logs directory for easier debugging
     volumes:
-      - app_logs:/var/log/supervisor
-
+      #- app_logs:/var/log/supervisor
+      - /srv/ldpv2_logs:/var/log/supervisor
+      
 volumes:
   postgres_data:
     driver: local

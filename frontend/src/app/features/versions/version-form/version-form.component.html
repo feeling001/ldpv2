@@ -1,0 +1,70 @@
+<div class="container">
+  <h1>{{ isEditMode ? 'Edit Version' : 'Add New Version' }}</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="versionIdentifier">Version Identifier *</label>
+      <input 
+        id="versionIdentifier" 
+        type="text" 
+        formControlName="versionIdentifier"
+        placeholder="e.g., 1.2.0, 2024.Q1"
+        [class.error]="form.get('versionIdentifier')?.invalid && form.get('versionIdentifier')?.touched"
+      />
+      <div class="error-message" *ngIf="form.get('versionIdentifier')?.invalid && form.get('versionIdentifier')?.touched">
+        <span *ngIf="form.get('versionIdentifier')?.errors?.['required']">Version identifier is required</span>
+        <span *ngIf="form.get('versionIdentifier')?.errors?.['maxlength']">Max 100 characters</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="externalReference">External Reference</label>
+      <input 
+        id="externalReference" 
+        type="url" 
+        formControlName="externalReference"
+        placeholder="e.g., https://github.com/org/repo/releases/tag/v1.2.0"
+        [class.error]="form.get('externalReference')?.invalid && form.get('externalReference')?.touched"
+      />
+      <small>Git tag, JIRA release link, etc.</small>
+      <div class="error-message" *ngIf="form.get('externalReference')?.invalid && form.get('externalReference')?.touched">
+        Max 500 characters
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="releaseDate">Release Date *</label>
+        <input 
+          id="releaseDate" 
+          type="date" 
+          formControlName="releaseDate"
+          [class.error]="form.get('releaseDate')?.invalid && form.get('releaseDate')?.touched"
+        />
+        <div class="error-message" *ngIf="form.get('releaseDate')?.invalid && form.get('releaseDate')?.touched">
+          Release date is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="endOfLifeDate">End of Life Date</label>
+        <input 
+          id="endOfLifeDate" 
+          type="date" 
+          formControlName="endOfLifeDate"
+        />
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-secondary">Cancel</button>
+      <button type="submit" [disabled]="form.invalid || loading" class="btn-primary">
+        {{ loading ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  </form>
+</div>

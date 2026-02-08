@@ -1,0 +1,53 @@
+<div class="version-list-container">
+  <div class="header">
+    <h2>Versions for {{ applicationName }}</h2>
+    <button (click)="addVersion()" class="btn-primary">Add New Version</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading versions...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && versions.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Version</th>
+          <th>Release Date</th>
+          <th>End of Life</th>
+          <th>External Reference</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let version of versions">
+          <td><strong>{{ version.versionIdentifier }}</strong></td>
+          <td>{{ version.releaseDate | date:'mediumDate' }}</td>
+          <td>{{ version.endOfLifeDate ? (version.endOfLifeDate | date:'mediumDate') : '-' }}</td>
+          <td>
+            <a *ngIf="version.externalReference" 
+               [href]="version.externalReference" 
+               target="_blank"
+               class="external-link">
+              View Reference
+            </a>
+            <span *ngIf="!version.externalReference">-</span>
+          </td>
+          <td class="actions">
+            <button (click)="editVersion(version.id)" class="btn-sm">Edit</button>
+            <button (click)="deleteVersion(version.id)" class="btn-sm btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && versions.length === 0" class="empty">
+    No versions found. Click "Add New Version" to create one.
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button (click)="previousPage()" [disabled]="page === 0">Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next</button>
+  </div>
+</div>

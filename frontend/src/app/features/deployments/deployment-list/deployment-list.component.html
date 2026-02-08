@@ -1,0 +1,89 @@
+<div class="container">
+  <div class="header">
+    <h1>Deployment History</h1>
+    <button (click)="recordNew()" class="btn-primary">Record New Deployment</button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Application:</label>
+        <select [(ngModel)]="selectedApplicationId" (ngModelChange)="onFilterChange()" class="filter-select">
+          <option value="">All Applications</option>
+          <option *ngFor="let app of applications" [value]="app.id">{{ app.name }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Environment:</label>
+        <select [(ngModel)]="selectedEnvironmentId" (ngModelChange)="onFilterChange()" class="filter-select">
+          <option value="">All Environments</option>
+          <option *ngFor="let env of environments" [value]="env.id">{{ env.name }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>From Date:</label>
+        <input type="date" [(ngModel)]="dateFrom" (ngModelChange)="onFilterChange()" class="filter-input">
+      </div>
+
+      <div class="filter-group">
+        <label>To Date:</label>
+        <input type="date" [(ngModel)]="dateTo" (ngModelChange)="onFilterChange()" class="filter-input">
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && deployments.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Application</th>
+          <th>Version</th>
+          <th>Environment</th>
+          <th>Deployment Date</th>
+          <th>Deployed By</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let deployment of deployments">
+          <td><strong>{{ deployment.application.name }}</strong></td>
+          <td>{{ deployment.version.versionIdentifier }}</td>
+          <td>
+            <span 
+              class="env-badge" 
+              [class.env-prod]="deployment.environment.isProduction"
+              [class.env-non-prod]="!deployment.environment.isProduction">
+              {{ deployment.environment.name }}
+            </span>
+          </td>
+          <td>
+            {{ deployment.deploymentDate | date:'medium' }}
+            <br>
+            <small class="time-ago">{{ getDaysAgo(deployment.deploymentDate) }} days ago</small>
+          </td>
+          <td>{{ deployment.deployedBy || '-' }}</td>
+          <td>{{ deployment.notes || '-' }}</td>
+          <td>
+            <button (click)="viewDetails(deployment.id)" class="btn-sm">Details</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && deployments.length === 0" class="empty">
+    No deployments found matching your criteria.
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button (click)="previousPage()" [disabled]="page === 0">Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }} ({{ totalElements }} total)</span>
+    <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next</button>
+  </div>
+</div>
