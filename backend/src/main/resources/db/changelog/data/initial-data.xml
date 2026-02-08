@@ -12,7 +12,7 @@
         <insert tableName="users">
             <column name="username" value="admin"/>
             <!-- BCrypt hash for "admin" -->
-            <column name="password" value="$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cyhQQiNpz5ZeaQ/o6HIYTgYhqCL6e"/>
+            <column name="password" value="$2a$12$NW3BYA4/4C24fpdcquD6degQuJhoGdvMd5gPsGv.1mmOwa4bFpR/G"/>
             <column name="email" value="admin@ldpv2.com"/>
             <column name="role" value="ADMIN"/>
         </insert>

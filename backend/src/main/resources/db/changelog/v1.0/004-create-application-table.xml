@@ -5,20 +5,15 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="004-create-application-table" author="ldpv2-team">
+    <changeSet id="004-fix-application-status-type" author="ldpv2-team">
         
-        <!-- Create ApplicationStatus enum type -->
-        <sql>
-            CREATE TYPE application_status AS ENUM (
-                'IDEA',
-                'IN_DEVELOPMENT',
-                'IN_SERVICE',
-                'MAINTENANCE',
-                'DECOMMISSIONED'
-            );
-        </sql>
+        <!-- Drop existing table if it exists -->
+        <sql>DROP TABLE IF EXISTS application CASCADE;</sql>
         
-        <!-- Create application table -->
+        <!-- Drop the enum type if it exists -->
+        <sql>DROP TYPE IF EXISTS application_status CASCADE;</sql>
+        
+        <!-- Create application table with VARCHAR for status -->
         <createTable tableName="application">
             <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
                 <constraints primaryKey="true" nullable="false"/>
@@ -27,7 +22,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="TEXT"/>
-            <column name="status" type="application_status">
+            <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="business_unit_id" type="UUID">
@@ -57,86 +52,77 @@
         <createIndex tableName="application" indexName="idx_application_name">
             <column name="name"/>
         </createIndex>
+
+        <!-- Add check constraint to ensure valid status values -->
+        <sql>
+            ALTER TABLE application 
+            ADD CONSTRAINT check_application_status 
+            CHECK (status IN ('IDEA', 'IN_DEVELOPMENT', 'IN_SERVICE', 'MAINTENANCE', 'DECOMMISSIONED'));
+        </sql>
         
     </changeSet>
 
     <!-- Insert sample applications in a separate changeset -->
-    <changeSet id="004-insert-sample-applications" author="ldpv2-team">
+    <changeSet id="004-insert-sample-applications-fixed" author="ldpv2-team">
         
         <!-- Insert sample applications -->
-        <sql>
-            -- Customer Portal (Digital Services)
-            INSERT INTO application (name, description, status, business_unit_id, end_of_support_date, end_of_life_date)
-            SELECT 
-                'Customer Portal',
-                'External customer-facing portal for self-service',
-                'IN_SERVICE'::application_status,
-                id,
-                '2028-12-31'::DATE,
-                '2030-12-31'::DATE
-            FROM business_unit WHERE name = 'Digital Services';
+        <insert tableName="application">
+            <column name="name" value="Customer Portal"/>
+            <column name="description" value="External customer-facing portal for self-service"/>
+            <column name="status" value="IN_SERVICE"/>
+            <column name="business_unit_id" valueComputed="(SELECT id FROM business_unit WHERE name = 'Digital Services' LIMIT 1)"/>
+            <column name="end_of_support_date" value="2028-12-31"/>
+            <column name="end_of_life_date" value="2030-12-31"/>
+        </insert>
 
-            -- Internal CRM (Digital Services)
-            INSERT INTO application (name, description, status, business_unit_id, end_of_support_date, end_of_life_date)
-            SELECT 
-                'Internal CRM',
-                'Customer relationship management system',
-                'IN_SERVICE'::application_status,
-                id,
-                '2027-06-30'::DATE,
-                '2029-06-30'::DATE
-            FROM business_unit WHERE name = 'Digital Services';
+        <insert tableName="application">
+            <column name="name" value="Internal CRM"/>
+            <column name="description" value="Customer relationship management system"/>
+            <column name="status" value="IN_SERVICE"/>
+            <column name="business_unit_id" valueComputed="(SELECT id FROM business_unit WHERE name = 'Digital Services' LIMIT 1)"/>
+            <column name="end_of_support_date" value="2027-06-30"/>
+            <column name="end_of_life_date" value="2029-06-30"/>
+        </insert>
 
-            -- HR Management System (Human Resources)
-            INSERT INTO application (name, description, status, business_unit_id, end_of_support_date, end_of_life_date)
-            SELECT 
-                'HR Management System',
-                'Employee data and payroll management',
-                'IN_SERVICE'::application_status,
-                id,
-                '2029-12-31'::DATE,
-                '2031-12-31'::DATE
-            FROM business_unit WHERE name = 'Human Resources';
+        <insert tableName="application">
+            <column name="name" value="HR Management System"/>
+            <column name="description" value="Employee data and payroll management"/>
+            <column name="status" value="IN_SERVICE"/>
+            <column name="business_unit_id" valueComputed="(SELECT id FROM business_unit WHERE name = 'Human Resources' LIMIT 1)"/>
+            <column name="end_of_support_date" value="2029-12-31"/>
+            <column name="end_of_life_date" value="2031-12-31"/>
+        </insert>
 
-            -- Financial Reporting Tool (Finance)
-            INSERT INTO application (name, description, status, business_unit_id, end_of_support_date, end_of_life_date)
-            SELECT 
-                'Financial Reporting Tool',
-                'Automated financial reporting and analytics',
-                'IN_SERVICE'::application_status,
-                id,
-                '2026-12-31'::DATE,
-                '2028-12-31'::DATE
-            FROM business_unit WHERE name = 'Finance';
+        <insert tableName="application">
+            <column name="name" value="Financial Reporting Tool"/>
+            <column name="description" value="Automated financial reporting and analytics"/>
+            <column name="status" value="IN_SERVICE"/>
+            <column name="business_unit_id" valueComputed="(SELECT id FROM business_unit WHERE name = 'Finance' LIMIT 1)"/>
+            <column name="end_of_support_date" value="2026-12-31"/>
+            <column name="end_of_life_date" value="2028-12-31"/>
+        </insert>
 
-            -- Mobile App (Digital Services)
-            INSERT INTO application (name, description, status, business_unit_id)
-            SELECT 
-                'Mobile App',
-                'Customer mobile application',
-                'IN_DEVELOPMENT'::application_status,
-                id
-            FROM business_unit WHERE name = 'Digital Services';
+        <insert tableName="application">
+            <column name="name" value="Mobile App"/>
+            <column name="description" value="Customer mobile application"/>
+            <column name="status" value="IN_DEVELOPMENT"/>
+            <column name="business_unit_id" valueComputed="(SELECT id FROM business_unit WHERE name = 'Digital Services' LIMIT 1)"/>
+        </insert>
 
-            -- Legacy System (Operations)
-            INSERT INTO application (name, description, status, business_unit_id, end_of_life_date)
-            SELECT 
-                'Legacy Inventory System',
-                'Old inventory management system - to be decommissioned',
-                'MAINTENANCE'::application_status,
-                id,
-                '2026-06-30'::DATE
-            FROM business_unit WHERE name = 'Operations';
+        <insert tableName="application">
+            <column name="name" value="Legacy Inventory System"/>
+            <column name="description" value="Old inventory management system - to be decommissioned"/>
+            <column name="status" value="MAINTENANCE"/>
+            <column name="business_unit_id" valueComputed="(SELECT id FROM business_unit WHERE name = 'Operations' LIMIT 1)"/>
+            <column name="end_of_life_date" value="2026-06-30"/>
+        </insert>
 
-            -- AI Analytics Platform (Digital Services)
-            INSERT INTO application (name, description, status, business_unit_id)
-            SELECT 
-                'AI Analytics Platform',
-                'Machine learning based analytics platform',
-                'IDEA'::application_status,
-                id
-            FROM business_unit WHERE name = 'Digital Services';
-        </sql>
+        <insert tableName="application">
+            <column name="name" value="AI Analytics Platform"/>
+            <column name="description" value="Machine learning based analytics platform"/>
+            <column name="status" value="IDEA"/>
+            <column name="business_unit_id" valueComputed="(SELECT id FROM business_unit WHERE name = 'Digital Services' LIMIT 1)"/>
+        </insert>
         
     </changeSet>
     
