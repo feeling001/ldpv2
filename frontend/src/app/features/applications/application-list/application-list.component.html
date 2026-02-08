@@ -1,0 +1,94 @@
+<div class="container">
+  <div class="header">
+    <h1>Applications</h1>
+    <button (click)="createNew()" class="btn-primary">Create New Application</button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Search by name:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Search applications..."
+          class="search-input"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label>Status:</label>
+        <select [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()" class="filter-select">
+          <option value="">All Statuses</option>
+          <option *ngFor="let status of statusOptions" [value]="status">
+            {{ getStatusDisplay(status) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Business Unit:</label>
+        <select [(ngModel)]="selectedBusinessUnitId" (ngModelChange)="onFilterChange()" class="filter-select">
+          <option value="">All Business Units</option>
+          <option *ngFor="let bu of businessUnits" [value]="bu.id">
+            {{ bu.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && applications.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Business Unit</th>
+          <th>End of Life</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of applications">
+          <td><strong>{{ app.name }}</strong></td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(app.status)">
+              {{ getStatusDisplay(app.status) }}
+            </span>
+          </td>
+          <td>{{ app.businessUnit.name }}</td>
+          <td>{{ app.endOfLifeDate ? (app.endOfLifeDate | date:'mediumDate') : '-' }}</td>
+          <td class="actions">
+            <button (click)="viewDetails(app.id)" class="btn-sm">View</button>
+            <button (click)="edit(app.id)" class="btn-sm">Edit</button>
+            <select 
+              (change)="changeStatus(app.id, $any($event.target).value)" 
+              class="btn-sm status-select"
+              [value]="app.status">
+              <option disabled selected>Change Status</option>
+              <option *ngFor="let status of statusOptions" [value]="status">
+                {{ getStatusDisplay(status) }}
+              </option>
+            </select>
+            <button (click)="delete(app.id)" class="btn-sm btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && applications.length === 0" class="empty">
+    No applications found. Click "Create New Application" to get started.
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button (click)="previousPage()" [disabled]="page === 0">Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }} ({{ totalElements }} total)</span>
+    <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next</button>
+  </div>
+</div>

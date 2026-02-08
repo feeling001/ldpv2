@@ -13,4 +13,7 @@
     <!-- Story 1: Business Units -->
     <include file="db/changelog/v1.0/003-create-business-unit-table.xml"/>
     
+    <!-- Story 2: Applications -->
+    <include file="db/changelog/v1.0/004-create-application-table.xml"/>
+    
 </databaseChangeLog>

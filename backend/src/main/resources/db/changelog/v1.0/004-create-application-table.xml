@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="004-create-application-table" author="ldpv2-team">
+        
+        <!-- Create ApplicationStatus enum type -->
+        <sql>
+            CREATE TYPE application_status AS ENUM (
+                'IDEA',
+                'IN_DEVELOPMENT',
+                'IN_SERVICE',
+                'MAINTENANCE',
+                'DECOMMISSIONED'
+            );
+        </sql>
+        
+        <!-- Create application table -->
+        <createTable tableName="application">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="status" type="application_status">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_unit_id" type="UUID">
+                <constraints nullable="false" 
+                    foreignKeyName="fk_application_business_unit"
+                    references="business_unit(id)"/>
+            </column>
+            <column name="end_of_life_date" type="DATE"/>
+            <column name="end_of_support_date" type="DATE"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Create indexes -->
+        <createIndex tableName="application" indexName="idx_application_status">
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex tableName="application" indexName="idx_application_business_unit">
+            <column name="business_unit_id"/>
+        </createIndex>
+
+        <createIndex tableName="application" indexName="idx_application_name">
+            <column name="name"/>
+        </createIndex>
+        
+    </changeSet>
+
+    <!-- Insert sample applications in a separate changeset -->
+    <changeSet id="004-insert-sample-applications" author="ldpv2-team">
+        
+        <!-- Insert sample applications -->
+        <sql>
+            -- Customer Portal (Digital Services)
+            INSERT INTO application (name, description, status, business_unit_id, end_of_support_date, end_of_life_date)
+            SELECT 
+                'Customer Portal',
+                'External customer-facing portal for self-service',
+                'IN_SERVICE'::application_status,
+                id,
+                '2028-12-31'::DATE,
+                '2030-12-31'::DATE
+            FROM business_unit WHERE name = 'Digital Services';
+
+            -- Internal CRM (Digital Services)
+            INSERT INTO application (name, description, status, business_unit_id, end_of_support_date, end_of_life_date)
+            SELECT 
+                'Internal CRM',
+                'Customer relationship management system',
+                'IN_SERVICE'::application_status,
+                id,
+                '2027-06-30'::DATE,
+                '2029-06-30'::DATE
+            FROM business_unit WHERE name = 'Digital Services';
+
+            -- HR Management System (Human Resources)
+            INSERT INTO application (name, description, status, business_unit_id, end_of_support_date, end_of_life_date)
+            SELECT 
+                'HR Management System',
+                'Employee data and payroll management',
+                'IN_SERVICE'::application_status,
+                id,
+                '2029-12-31'::DATE,
+                '2031-12-31'::DATE
+            FROM business_unit WHERE name = 'Human Resources';
+
+            -- Financial Reporting Tool (Finance)
+            INSERT INTO application (name, description, status, business_unit_id, end_of_support_date, end_of_life_date)
+            SELECT 
+                'Financial Reporting Tool',
+                'Automated financial reporting and analytics',
+                'IN_SERVICE'::application_status,
+                id,
+                '2026-12-31'::DATE,
+                '2028-12-31'::DATE
+            FROM business_unit WHERE name = 'Finance';
+
+            -- Mobile App (Digital Services)
+            INSERT INTO application (name, description, status, business_unit_id)
+            SELECT 
+                'Mobile App',
+                'Customer mobile application',
+                'IN_DEVELOPMENT'::application_status,
+                id
+            FROM business_unit WHERE name = 'Digital Services';
+
+            -- Legacy System (Operations)
+            INSERT INTO application (name, description, status, business_unit_id, end_of_life_date)
+            SELECT 
+                'Legacy Inventory System',
+                'Old inventory management system - to be decommissioned',
+                'MAINTENANCE'::application_status,
+                id,
+                '2026-06-30'::DATE
+            FROM business_unit WHERE name = 'Operations';
+
+            -- AI Analytics Platform (Digital Services)
+            INSERT INTO application (name, description, status, business_unit_id)
+            SELECT 
+                'AI Analytics Platform',
+                'Machine learning based analytics platform',
+                'IDEA'::application_status,
+                id
+            FROM business_unit WHERE name = 'Digital Services';
+        </sql>
+        
+    </changeSet>
+    
+</databaseChangeLog>

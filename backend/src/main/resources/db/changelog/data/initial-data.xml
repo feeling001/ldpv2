@@ -8,11 +8,11 @@
     <changeSet id="initial-data" author="ldpv2-team">
         
         <!-- Insert default admin user -->
-        <!-- Password: admin123 (hashed with BCrypt) -->
+        <!-- Password: admin (hashed with BCrypt) -->
         <insert tableName="users">
             <column name="username" value="admin"/>
-           <!-- <column name="password" value="$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"/>-->
-            <column name="password" value="$2a$12$mCGWGeNM3r11.yFhPFi22e./YQl2pRTIpJBVUwydScZioE3y6xm3m"/>
+            <!-- BCrypt hash for "admin" -->
+            <column name="password" value="$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cyhQQiNpz5ZeaQ/o6HIYTgYhqCL6e"/>
             <column name="email" value="admin@ldpv2.com"/>
             <column name="role" value="ADMIN"/>
         </insert>

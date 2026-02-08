@@ -1,0 +1,95 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <div class="container">
+      <div class="header-content">
+        <div class="branding">
+          <h1>LDPv2</h1>
+          <p class="subtitle">Lifecycle Data Platform</p>
+        </div>
+        <div class="user-menu">
+          <span class="user-info" *ngIf="currentUser">
+            <span class="user-icon">👤</span>
+            <span class="username">{{ currentUser.username }}</span>
+            <span class="role-badge">{{ currentUser.role }}</span>
+          </span>
+          <button (click)="logout()" class="btn-logout">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="container">
+      <section class="welcome-section">
+        <h2>Welcome back, {{ currentUser?.username }}! 👋</h2>
+        <p>Manage your applications, environments, and business units from one place.</p>
+      </section>
+
+      <section class="stats-section">
+        <div class="stats-grid">
+          <div class="stat-card" *ngFor="let stat of stats">
+            <div class="stat-icon">{{ stat.icon }}</div>
+            <div class="stat-content">
+              <div class="stat-value">{{ stat.value }}</div>
+              <div class="stat-label">{{ stat.label }}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features-section">
+        <h3>Quick Access</h3>
+        <div class="features-grid">
+          <div 
+            class="feature-card" 
+            *ngFor="let feature of features"
+            (click)="navigate(feature.route)"
+            [style.border-left-color]="feature.color">
+            <div class="feature-icon">{{ feature.icon }}</div>
+            <div class="feature-content">
+              <h4>{{ feature.title }}</h4>
+              <p>{{ feature.description }}</p>
+            </div>
+            <div class="feature-arrow">→</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="getting-started">
+        <h3>Getting Started</h3>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h4>Create Business Units</h4>
+            <p>Organize your applications by business units</p>
+            <button (click)="navigate('/business-units')" class="btn-link">
+              Go to Business Units →
+            </button>
+          </div>
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h4>Add Applications</h4>
+            <p>Register your applications and track their lifecycle</p>
+            <button (click)="navigate('/applications')" class="btn-link">
+              Go to Applications →
+            </button>
+          </div>
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h4>Configure Environments</h4>
+            <p>Set up deployment environments</p>
+            <button (click)="navigate('/environments')" class="btn-link">
+              Go to Environments →
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="dashboard-footer">
+    <div class="container">
+      <p>LDPv2 - Lifecycle Data Platform v2 | © 2026</p>
+    </div>
+  </footer>
+</div>
