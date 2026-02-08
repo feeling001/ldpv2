@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="header">
+    <h1>Persons</h1>
+    <button (click)="createNew()" class="btn-primary">Add New Person</button>
+  </div>
+
+  <div class="search-bar">
+    <input 
+      type="text" 
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange($event)"
+      placeholder="Search by name..."
+      class="search-input"
+    />
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && persons.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let person of persons">
+          <td>{{ person.firstName }}</td>
+          <td>{{ person.lastName }}</td>
+          <td>{{ person.email }}</td>
+          <td>{{ person.phone || '-' }}</td>
+          <td class="actions">
+            <button (click)="viewDetails(person.id)" class="btn-sm">View</button>
+            <button (click)="edit(person.id)" class="btn-sm">Edit</button>
+            <button (click)="delete(person.id)" class="btn-sm btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && persons.length === 0 && !searchQuery" class="empty">
+    No persons found. Click "Add New Person" to get started.
+  </div>
+
+  <div *ngIf="!loading && persons.length === 0 && searchQuery" class="empty">
+    No persons match your search "{{ searchQuery }}".
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button (click)="previousPage()" [disabled]="page === 0">Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }} ({{ totalElements }} total)</span>
+    <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next</button>
+  </div>
+</div>

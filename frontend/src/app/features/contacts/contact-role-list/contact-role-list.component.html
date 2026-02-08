@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="header">
+    <h1>Contact Roles</h1>
+    <p class="subtitle">Predefined roles for contacts (Admin can add new roles via API)</p>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && roles.length > 0" class="roles-grid">
+    <div class="role-card" *ngFor="let role of roles">
+      <div class="role-icon">👤</div>
+      <h3>{{ role.roleName }}</h3>
+      <p>{{ role.description || 'No description' }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && roles.length === 0" class="empty">
+    No contact roles found.
+  </div>
+</div>

@@ -1,0 +1,85 @@
+<div class="container">
+  <h1>Create New Contact</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="contactRoleId">Contact Role *</label>
+      <select 
+        id="contactRoleId" 
+        formControlName="contactRoleId"
+        [class.error]="form.get('contactRoleId')?.invalid && form.get('contactRoleId')?.touched"
+      >
+        <option value="">Select a role</option>
+        <option *ngFor="let role of roles" [value]="role.id">
+          {{ role.roleName }}
+        </option>
+      </select>
+      <div class="error-message" *ngIf="form.get('contactRoleId')?.invalid && form.get('contactRoleId')?.touched">
+        Contact role is required
+      </div>
+    </div>
+
+    <div class="persons-section">
+      <h2>Select Persons *</h2>
+      <p class="help-text">Select one or more persons and designate one as primary</p>
+
+      <div class="persons-list" *ngIf="persons.length > 0">
+        <div 
+          class="person-item" 
+          *ngFor="let person of persons"
+          [class.selected]="isSelected(person.id)"
+          [class.primary]="isPrimary(person.id)">
+          
+          <div class="person-checkbox">
+            <input 
+              type="checkbox" 
+              [id]="'person-' + person.id"
+              [checked]="isSelected(person.id)"
+              (change)="togglePerson(person.id)"
+            />
+          </div>
+
+          <label [for]="'person-' + person.id" class="person-info">
+            <strong>{{ person.firstName }} {{ person.lastName }}</strong>
+            <span>{{ person.email }}</span>
+            <span *ngIf="person.phone">{{ person.phone }}</span>
+          </label>
+
+          <div class="person-actions">
+            <button 
+              type="button"
+              class="btn-sm btn-primary"
+              [disabled]="!isSelected(person.id)"
+              (click)="setPrimary(person.id)">
+              {{ isPrimary(person.id) ? '★ Primary' : 'Set Primary' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-persons" *ngIf="persons.length === 0">
+        No persons available. Please create persons first.
+      </div>
+
+      <div class="selected-summary" *ngIf="selectedPersons.size > 0">
+        <strong>Selected:</strong> {{ selectedPersons.size }} person(s)
+        <span *ngIf="primaryPersonId"> | Primary set ✓</span>
+        <span *ngIf="!primaryPersonId" class="warning"> | Please designate a primary person</span>
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-secondary">Cancel</button>
+      <button 
+        type="submit" 
+        [disabled]="form.invalid || selectedPersons.size === 0 || !primaryPersonId || loading" 
+        class="btn-primary">
+        {{ loading ? 'Creating...' : 'Create Contact' }}
+      </button>
+    </div>
+  </form>
+</div>

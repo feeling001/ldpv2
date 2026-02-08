@@ -1,0 +1,71 @@
+<div class="container">
+  <h1>{{ isEditMode ? 'Edit Person' : 'Add New Person' }}</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="firstName">First Name *</label>
+      <input 
+        id="firstName" 
+        type="text" 
+        formControlName="firstName"
+        [class.error]="form.get('firstName')?.invalid && form.get('firstName')?.touched"
+      />
+      <div class="error-message" *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched">
+        <span *ngIf="form.get('firstName')?.errors?.['required']">First name is required</span>
+        <span *ngIf="form.get('firstName')?.errors?.['maxlength']">Max 100 characters</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="lastName">Last Name *</label>
+      <input 
+        id="lastName" 
+        type="text" 
+        formControlName="lastName"
+        [class.error]="form.get('lastName')?.invalid && form.get('lastName')?.touched"
+      />
+      <div class="error-message" *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched">
+        <span *ngIf="form.get('lastName')?.errors?.['required']">Last name is required</span>
+        <span *ngIf="form.get('lastName')?.errors?.['maxlength']">Max 100 characters</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email *</label>
+      <input 
+        id="email" 
+        type="email" 
+        formControlName="email"
+        [class.error]="form.get('email')?.invalid && form.get('email')?.touched"
+      />
+      <div class="error-message" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+        <span *ngIf="form.get('email')?.errors?.['required']">Email is required</span>
+        <span *ngIf="form.get('email')?.errors?.['email']">Valid email is required</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input 
+        id="phone" 
+        type="tel" 
+        formControlName="phone"
+        [class.error]="form.get('phone')?.invalid && form.get('phone')?.touched"
+      />
+      <div class="error-message" *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched">
+        <span *ngIf="form.get('phone')?.errors?.['maxlength']">Max 50 characters</span>
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-secondary">Cancel</button>
+      <button type="submit" [disabled]="form.invalid || loading" class="btn-primary">
+        {{ loading ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  </form>
+</div>

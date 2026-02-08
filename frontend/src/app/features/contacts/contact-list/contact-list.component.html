@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="header">
+    <h1>Contacts</h1>
+    <button (click)="createNew()" class="btn-primary">Create New Contact</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && contacts.length > 0" class="contacts-grid">
+    <div class="contact-card" *ngFor="let contact of contacts">
+      <div class="contact-header">
+        <h3>{{ contact.contactRole.roleName }}</h3>
+        <span class="person-count">{{ getPersonCount(contact) }} person(s)</span>
+      </div>
+      
+      <div class="contact-body">
+        <div class="primary-person">
+          <strong>Primary:</strong> {{ getPrimaryPerson(contact) }}
+        </div>
+        
+        <div class="all-persons" *ngIf="contact.persons.length > 0">
+          <strong>All persons:</strong>
+          <ul>
+            <li *ngFor="let personInContact of contact.persons">
+              {{ personInContact.person.firstName }} {{ personInContact.person.lastName }}
+              <span class="primary-badge" *ngIf="personInContact.isPrimary">PRIMARY</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="contact-actions">
+        <button (click)="viewDetails(contact.id)" class="btn-sm">View Details</button>
+        <button (click)="delete(contact.id)" class="btn-sm btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && contacts.length === 0" class="empty">
+    No contacts found. Click "Create New Contact" to get started.
+  </div>
+</div>

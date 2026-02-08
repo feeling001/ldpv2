@@ -93,5 +93,58 @@ export const routes: Routes = [
           .then(m => m.EnvironmentFormComponent)
       }
     ]
+  },
+  {
+    path: 'persons',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/persons/person-list/person-list.component')
+          .then(m => m.PersonListComponent)
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./features/persons/person-form/person-form.component')
+          .then(m => m.PersonFormComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./features/persons/person-detail/person-detail.component')
+          .then(m => m.PersonDetailComponent)
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () => import('./features/persons/person-form/person-form.component')
+          .then(m => m.PersonFormComponent)
+      }
+    ]
+  },
+  {
+    path: 'contacts',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/contacts/contact-list/contact-list.component')
+          .then(m => m.ContactListComponent)
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./features/contacts/contact-form/contact-form.component')
+          .then(m => m.ContactFormComponent)
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./features/contacts/contact-detail/contact-detail.component')
+          .then(m => m.ContactDetailComponent)
+      }
+    ]
+  },
+  {
+    path: 'contact-roles',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/contacts/contact-role-list/contact-role-list.component')
+      .then(m => m.ContactRoleListComponent)
   }
 ];

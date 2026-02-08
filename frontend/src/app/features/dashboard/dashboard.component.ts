@@ -35,13 +35,35 @@ export class DashboardComponent implements OnInit {
       icon: '🌍',
       route: '/environments',
       color: '#ff9800'
+    },
+    {
+      title: 'Persons',
+      description: 'Manage individual contacts',
+      icon: '👤',
+      route: '/persons',
+      color: '#e91e63'
+    },
+    {
+      title: 'Contacts',
+      description: 'Manage functional contacts and roles',
+      icon: '👥',
+      route: '/contacts',
+      color: '#9c27b0'
+    },
+    {
+      title: 'Contact Roles',
+      description: 'View predefined contact roles',
+      icon: '🎭',
+      route: '/contact-roles',
+      color: '#607d8b'
     }
   ];
 
   stats = [
     { label: 'Business Units', value: '4', icon: '🏢' },
     { label: 'Applications', value: '7', icon: '📱' },
-    { label: 'Environments', value: '4', icon: '🌍' }
+    { label: 'Environments', value: '4', icon: '🌍' },
+    { label: 'Persons', value: '4', icon: '👤' }
   ];
 
   constructor(

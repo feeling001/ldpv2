@@ -1,0 +1,48 @@
+<div class="container">
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="person && !loading" class="detail-card">
+    <div class="header">
+      <h1>{{ person.firstName }} {{ person.lastName }}</h1>
+      <div class="actions">
+        <button (click)="edit()" class="btn-primary">Edit</button>
+        <button (click)="delete()" class="btn-danger">Delete</button>
+      </div>
+    </div>
+
+    <div class="details">
+      <div class="detail-row">
+        <label>First Name:</label>
+        <span>{{ person.firstName }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Last Name:</label>
+        <span>{{ person.lastName }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Email:</label>
+        <span>{{ person.email }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Phone:</label>
+        <span>{{ person.phone || '-' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Created:</label>
+        <span>{{ person.createdAt | date:'medium' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <label>Last Updated:</label>
+        <span>{{ person.updatedAt | date:'medium' }}</span>
+      </div>
+    </div>
+
+    <button (click)="back()" class="btn-secondary">Back to List</button>
+  </div>
+</div>

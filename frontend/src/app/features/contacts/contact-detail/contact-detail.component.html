@@ -1,0 +1,57 @@
+<div class="container">
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="contact && !loading" class="detail-card">
+    <div class="header">
+      <h1>{{ contact.contactRole.roleName }}</h1>
+      <button (click)="delete()" class="btn-danger">Delete Contact</button>
+    </div>
+
+    <div class="role-description" *ngIf="contact.contactRole.description">
+      <p>{{ contact.contactRole.description }}</p>
+    </div>
+
+    <div class="persons-section">
+      <h2>Associated Persons ({{ contact.persons.length }})</h2>
+      
+      <div class="persons-list" *ngIf="contact.persons.length > 0">
+        <div class="person-item" *ngFor="let personInContact of contact.persons">
+          <div class="person-info">
+            <h3>
+              {{ personInContact.person.firstName }} {{ personInContact.person.lastName }}
+              <span class="primary-badge" *ngIf="personInContact.isPrimary">PRIMARY</span>
+            </h3>
+            <p>{{ personInContact.person.email }}</p>
+            <p *ngIf="personInContact.person.phone">{{ personInContact.person.phone }}</p>
+          </div>
+          
+          <div class="person-actions">
+            <button 
+              (click)="setPrimary(personInContact.person.id)" 
+              class="btn-sm btn-primary"
+              *ngIf="!personInContact.isPrimary">
+              Set as Primary
+            </button>
+            <button 
+              (click)="removePerson(personInContact.person.id)" 
+              class="btn-sm btn-danger">
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-persons" *ngIf="contact.persons.length === 0">
+        No persons associated with this contact.
+      </div>
+    </div>
+
+    <div class="metadata">
+      <p><strong>Created:</strong> {{ contact.createdAt | date:'medium' }}</p>
+      <p><strong>Updated:</strong> {{ contact.updatedAt | date:'medium' }}</p>
+    </div>
+
+    <button (click)="back()" class="btn-secondary">Back to List</button>
+  </div>
+</div>
