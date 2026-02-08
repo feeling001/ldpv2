@@ -21,7 +21,7 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     @Query("SELECT a FROM Application a WHERE " +
            "(:status IS NULL OR a.status = :status) AND " +
            "(:businessUnitId IS NULL OR a.businessUnit.id = :businessUnitId) AND " +
-           "(:name IS NULL OR LOWER(a.name) LIKE LOWER(CONCAT('%', :name, '%')))")
+           "(:name IS NULL OR LOWER(a.name) LIKE LOWER(CONCAT('%', :name, '%')) ESCAPE '\\')")
     Page<Application> search(
         @Param("status") ApplicationStatus status,
         @Param("businessUnitId") UUID businessUnitId,
