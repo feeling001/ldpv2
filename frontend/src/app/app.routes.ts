@@ -12,139 +12,139 @@ export const routes: Routes = [
     loadComponent: () => import('./core/auth/login/login.component').then(m => m.LoginComponent)
   },
   {
-    path: 'dashboard',
+    path: '',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
-  },
-  {
-    path: 'business-units',
-    canActivate: [authGuard],
+    loadComponent: () => import('./core/layout/main-layout/main-layout.component').then(m => m.MainLayoutComponent),
     children: [
       {
-        path: '',
-        loadComponent: () => import('./features/business-units/business-unit-list/business-unit-list.component')
-          .then(m => m.BusinessUnitListComponent)
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
-        path: 'new',
-        loadComponent: () => import('./features/business-units/business-unit-form/business-unit-form.component')
-          .then(m => m.BusinessUnitFormComponent)
+        path: 'business-units',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/business-units/business-unit-list/business-unit-list.component')
+              .then(m => m.BusinessUnitListComponent)
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/business-units/business-unit-form/business-unit-form.component')
+              .then(m => m.BusinessUnitFormComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/business-units/business-unit-detail/business-unit-detail.component')
+              .then(m => m.BusinessUnitDetailComponent)
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/business-units/business-unit-form/business-unit-form.component')
+              .then(m => m.BusinessUnitFormComponent)
+          }
+        ]
       },
       {
-        path: ':id',
-        loadComponent: () => import('./features/business-units/business-unit-detail/business-unit-detail.component')
-          .then(m => m.BusinessUnitDetailComponent)
+        path: 'applications',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/applications/application-list/application-list.component')
+              .then(m => m.ApplicationListComponent)
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/applications/application-form/application-form.component')
+              .then(m => m.ApplicationFormComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/applications/application-detail/application-detail.component')
+              .then(m => m.ApplicationDetailComponent)
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/applications/application-form/application-form.component')
+              .then(m => m.ApplicationFormComponent)
+          }
+        ]
       },
       {
-        path: ':id/edit',
-        loadComponent: () => import('./features/business-units/business-unit-form/business-unit-form.component')
-          .then(m => m.BusinessUnitFormComponent)
+        path: 'environments',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/environments/environment-list/environment-list.component')
+              .then(m => m.EnvironmentListComponent)
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/environments/environment-form/environment-form.component')
+              .then(m => m.EnvironmentFormComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/environments/environment-detail/environment-detail.component')
+              .then(m => m.EnvironmentDetailComponent)
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/environments/environment-form/environment-form.component')
+              .then(m => m.EnvironmentFormComponent)
+          }
+        ]
+      },
+      {
+        path: 'persons',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/persons/person-list/person-list.component')
+              .then(m => m.PersonListComponent)
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/persons/person-form/person-form.component')
+              .then(m => m.PersonFormComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/persons/person-detail/person-detail.component')
+              .then(m => m.PersonDetailComponent)
+          },
+          {
+            path: ':id/edit',
+            loadComponent: () => import('./features/persons/person-form/person-form.component')
+              .then(m => m.PersonFormComponent)
+          }
+        ]
+      },
+      {
+        path: 'contacts',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/contacts/contact-list/contact-list.component')
+              .then(m => m.ContactListComponent)
+          },
+          {
+            path: 'new',
+            loadComponent: () => import('./features/contacts/contact-form/contact-form.component')
+              .then(m => m.ContactFormComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/contacts/contact-detail/contact-detail.component')
+              .then(m => m.ContactDetailComponent)
+          }
+        ]
+      },
+      {
+        path: 'contact-roles',
+        loadComponent: () => import('./features/contacts/contact-role-list/contact-role-list.component')
+          .then(m => m.ContactRoleListComponent)
       }
     ]
-  },
-  {
-    path: 'applications',
-    canActivate: [authGuard],
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./features/applications/application-list/application-list.component')
-          .then(m => m.ApplicationListComponent)
-      },
-      {
-        path: 'new',
-        loadComponent: () => import('./features/applications/application-form/application-form.component')
-          .then(m => m.ApplicationFormComponent)
-      },
-      {
-        path: ':id',
-        loadComponent: () => import('./features/applications/application-detail/application-detail.component')
-          .then(m => m.ApplicationDetailComponent)
-      },
-      {
-        path: ':id/edit',
-        loadComponent: () => import('./features/applications/application-form/application-form.component')
-          .then(m => m.ApplicationFormComponent)
-      }
-    ]
-  },
-  {
-    path: 'environments',
-    canActivate: [authGuard],
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./features/environments/environment-list/environment-list.component')
-          .then(m => m.EnvironmentListComponent)
-      },
-      {
-        path: 'new',
-        loadComponent: () => import('./features/environments/environment-form/environment-form.component')
-          .then(m => m.EnvironmentFormComponent)
-      },
-      {
-        path: ':id',
-        loadComponent: () => import('./features/environments/environment-detail/environment-detail.component')
-          .then(m => m.EnvironmentDetailComponent)
-      },
-      {
-        path: ':id/edit',
-        loadComponent: () => import('./features/environments/environment-form/environment-form.component')
-          .then(m => m.EnvironmentFormComponent)
-      }
-    ]
-  },
-  {
-    path: 'persons',
-    canActivate: [authGuard],
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./features/persons/person-list/person-list.component')
-          .then(m => m.PersonListComponent)
-      },
-      {
-        path: 'new',
-        loadComponent: () => import('./features/persons/person-form/person-form.component')
-          .then(m => m.PersonFormComponent)
-      },
-      {
-        path: ':id',
-        loadComponent: () => import('./features/persons/person-detail/person-detail.component')
-          .then(m => m.PersonDetailComponent)
-      },
-      {
-        path: ':id/edit',
-        loadComponent: () => import('./features/persons/person-form/person-form.component')
-          .then(m => m.PersonFormComponent)
-      }
-    ]
-  },
-  {
-    path: 'contacts',
-    canActivate: [authGuard],
-    children: [
-      {
-        path: '',
-        loadComponent: () => import('./features/contacts/contact-list/contact-list.component')
-          .then(m => m.ContactListComponent)
-      },
-      {
-        path: 'new',
-        loadComponent: () => import('./features/contacts/contact-form/contact-form.component')
-          .then(m => m.ContactFormComponent)
-      },
-      {
-        path: ':id',
-        loadComponent: () => import('./features/contacts/contact-detail/contact-detail.component')
-          .then(m => m.ContactDetailComponent)
-      }
-    ]
-  },
-  {
-    path: 'contact-roles',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/contacts/contact-role-list/contact-role-list.component')
-      .then(m => m.ContactRoleListComponent)
   }
 ];

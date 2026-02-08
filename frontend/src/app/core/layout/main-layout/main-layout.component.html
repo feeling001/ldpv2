@@ -1,0 +1,37 @@
+<div class="main-layout">
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h1>LDPv2</h1>
+      <p class="subtitle">Lifecycle Data Platform</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div 
+        *ngFor="let item of navItems" 
+        class="nav-item"
+        [class.active]="isActive(item.route)"
+        [style.border-left-color]="item.color"
+        (click)="navigate(item.route)">
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-title">{{ item.title }}</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="currentUser">
+        <span class="user-icon">👤</span>
+        <div class="user-details">
+          <div class="username">{{ currentUser.username }}</div>
+          <div class="role-badge">{{ currentUser.role }}</div>
+        </div>
+      </div>
+      <button (click)="logout()" class="btn-logout">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,18 @@
+# Feature 1
+Dans l'écran applications, je veux pouvoir ajouter des contacts à l'application.
+
+
+
+# Feature 2
+J'aimerais un écran me permettant de gérer les utilisateurs de l'application.
+(ou de permettre d'utiliser un LDAP pour identifier les users)
+A ce moment il faudra pouvoir assigner les users aux business units pour qu'ils puissent gérer les entités relatives à cette business unit la.
+admin peut tout faire.
+
+
+# Feature 3
+J'aimerais que les badges "quick access" soient toujours disponible dans une bannière à gauche sur chaque écran.
+Aujourd'hui les écrans de gestion (business units, applications, environments, personnes ...) sont des pages uniques et ce n'est pas pratique.
+Je préfèrerais un dashboard cohérent qui me permette d'accéder à tous les éléments de l'application en gardant ce menu à gauche.
+est-ce clair ? (n'implémente pas encore)
+
