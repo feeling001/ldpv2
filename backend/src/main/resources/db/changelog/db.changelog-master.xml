@@ -5,18 +5,13 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <!-- Story 0: Foundation -->
     <include file="db/changelog/v1.0/001-create-user-table.xml"/>
     <include file="db/changelog/v1.0/002-create-environment-table.xml"/>
     <include file="db/changelog/data/initial-data.xml"/>
-    
-    <!-- Story 1: Business Units -->
     <include file="db/changelog/v1.0/003-create-business-unit-table.xml"/>
-    
-    <!-- Story 2: Applications -->
     <include file="db/changelog/v1.0/004-create-application-table.xml"/>
-    
-    <!-- Story 3: Contacts -->
     <include file="db/changelog/v1.0/005-create-contact-tables.xml"/>
+    <include file="db/changelog/v1.0/006-create-version-table.xml"/>
+    <include file="db/changelog/v1.0/007-create-deployment-table.xml"/>
     
 </databaseChangeLog>

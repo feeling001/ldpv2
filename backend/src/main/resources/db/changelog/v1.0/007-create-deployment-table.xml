@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="007-create-deployment-table" author="ldpv2-team">
+        
+        <createTable tableName="deployment">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="application_id" type="UUID">
+                <constraints nullable="false" 
+                    foreignKeyName="fk_deployment_application"
+                    references="application(id)"/>
+            </column>
+            <column name="version_id" type="UUID">
+                <constraints nullable="false" 
+                    foreignKeyName="fk_deployment_version"
+                    references="version(id)"/>
+            </column>
+            <column name="environment_id" type="UUID">
+                <constraints nullable="false" 
+                    foreignKeyName="fk_deployment_environment"
+                    references="environment(id)"/>
+            </column>
+            <column name="deployment_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deployed_by" type="VARCHAR(255)"/>
+            <column name="notes" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="deployment" indexName="idx_deployment_application">
+            <column name="application_id"/>
+        </createIndex>
+
+        <createIndex tableName="deployment" indexName="idx_deployment_environment">
+            <column name="environment_id"/>
+        </createIndex>
+
+        <createIndex tableName="deployment" indexName="idx_deployment_date">
+            <column name="deployment_date" descending="true"/>
+        </createIndex>
+
+        <createIndex tableName="deployment" indexName="idx_deployment_app_env">
+            <column name="application_id"/>
+            <column name="environment_id"/>
+        </createIndex>
+
+        <!-- Sample deployments -->
+        <insert tableName="deployment">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Customer Portal' LIMIT 1)"/>
+            <column name="version_id" valueComputed="(SELECT id FROM version WHERE version_identifier = '1.2.0' LIMIT 1)"/>
+            <column name="environment_id" valueComputed="(SELECT id FROM environment WHERE name = 'PROD-EU' LIMIT 1)"/>
+            <column name="deployment_date" value="2025-01-15T10:30:00"/>
+            <column name="deployed_by" value="admin"/>
+            <column name="notes" value="Production deployment"/>
+        </insert>
+
+        <insert tableName="deployment">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Internal CRM' LIMIT 1)"/>
+            <column name="version_id" valueComputed="(SELECT id FROM version WHERE version_identifier = '2.1.0' LIMIT 1)"/>
+            <column name="environment_id" valueComputed="(SELECT id FROM environment WHERE name = 'PROD-EU' LIMIT 1)"/>
+            <column name="deployment_date" value="2024-10-01T11:00:00"/>
+            <column name="deployed_by" value="admin"/>
+            <column name="notes" value="Major update"/>
+        </insert>
+        
+    </changeSet>
+</databaseChangeLog>

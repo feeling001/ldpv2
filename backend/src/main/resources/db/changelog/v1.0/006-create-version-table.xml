@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="006-create-version-table" author="ldpv2-team">
+        
+        <createTable tableName="version">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="application_id" type="UUID">
+                <constraints nullable="false" 
+                    foreignKeyName="fk_version_application"
+                    references="application(id)"
+                    deleteCascade="true"/>
+            </column>
+            <column name="version_identifier" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="external_reference" type="VARCHAR(500)"/>
+            <column name="release_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_of_life_date" type="DATE"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint 
+            tableName="version" 
+            columnNames="application_id, version_identifier" 
+            constraintName="uk_version_app_identifier"/>
+
+        <createIndex tableName="version" indexName="idx_version_application">
+            <column name="application_id"/>
+        </createIndex>
+
+        <createIndex tableName="version" indexName="idx_version_release_date">
+            <column name="release_date"/>
+        </createIndex>
+
+        <!-- Sample data -->
+        <insert tableName="version">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Customer Portal' LIMIT 1)"/>
+            <column name="version_identifier" value="1.0.0"/>
+            <column name="external_reference" value="https://github.com/org/customer-portal/releases/tag/v1.0.0"/>
+            <column name="release_date" value="2024-01-15"/>
+        </insert>
+
+        <insert tableName="version">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Customer Portal' LIMIT 1)"/>
+            <column name="version_identifier" value="1.1.0"/>
+            <column name="release_date" value="2024-06-20"/>
+        </insert>
+
+        <insert tableName="version">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Customer Portal' LIMIT 1)"/>
+            <column name="version_identifier" value="1.2.0"/>
+            <column name="release_date" value="2025-01-10"/>
+        </insert>
+
+        <insert tableName="version">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Internal CRM' LIMIT 1)"/>
+            <column name="version_identifier" value="2.0.0"/>
+            <column name="release_date" value="2024-03-01"/>
+        </insert>
+
+        <insert tableName="version">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Internal CRM' LIMIT 1)"/>
+            <column name="version_identifier" value="2.1.0"/>
+            <column name="release_date" value="2024-09-15"/>
+        </insert>
+        
+    </changeSet>
+</databaseChangeLog>
