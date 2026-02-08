@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="005-create-contact-tables" author="ldpv2-team">
+        
+        <!-- Contact Roles Table -->
+        <createTable tableName="contact_role">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role_name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Person Table -->
+        <createTable tableName="person">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="phone" type="VARCHAR(50)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Contact Table -->
+        <createTable tableName="contact">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="contact_role_id" type="UUID">
+                <constraints nullable="false" 
+                    foreignKeyName="fk_contact_role"
+                    references="contact_role(id)"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Contact-Person Junction Table -->
+        <createTable tableName="contact_person">
+            <column name="contact_id" type="UUID">
+                <constraints nullable="false"
+                    foreignKeyName="fk_contact_person_contact"
+                    references="contact(id)"
+                    deleteCascade="true"/>
+            </column>
+            <column name="person_id" type="UUID">
+                <constraints nullable="false"
+                    foreignKeyName="fk_contact_person_person"
+                    references="person(id)"
+                    deleteCascade="true"/>
+            </column>
+            <column name="is_primary" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Indexes -->
+        <createIndex tableName="person" indexName="idx_person_email">
+            <column name="email"/>
+        </createIndex>
+
+        <createIndex tableName="contact" indexName="idx_contact_role">
+            <column name="contact_role_id"/>
+        </createIndex>
+
+        <addPrimaryKey tableName="contact_person" 
+            columnNames="contact_id, person_id" 
+            constraintName="pk_contact_person"/>
+
+        <!-- Insert default contact roles -->
+        <insert tableName="contact_role">
+            <column name="role_name" value="Product Owner"/>
+            <column name="description" value="Responsible for product vision and backlog"/>
+        </insert>
+
+        <insert tableName="contact_role">
+            <column name="role_name" value="Functional Authority"/>
+            <column name="description" value="Business decision maker"/>
+        </insert>
+
+        <insert tableName="contact_role">
+            <column name="role_name" value="Developer"/>
+            <column name="description" value="Software developer"/>
+        </insert>
+
+        <insert tableName="contact_role">
+            <column name="role_name" value="Maintainer"/>
+            <column name="description" value="System maintainer"/>
+        </insert>
+
+        <insert tableName="contact_role">
+            <column name="role_name" value="Technical Lead"/>
+            <column name="description" value="Technical team leader"/>
+        </insert>
+
+        <insert tableName="contact_role">
+            <column name="role_name" value="Business Analyst"/>
+            <column name="description" value="Requirements analyst"/>
+        </insert>
+
+        <insert tableName="contact_role">
+            <column name="role_name" value="Director"/>
+            <column name="description" value="Business unit director"/>
+        </insert>
+
+        <insert tableName="contact_role">
+            <column name="role_name" value="Program Manager"/>
+            <column name="description" value="Program management"/>
+        </insert>
+
+        <!-- Insert sample persons -->
+        <insert tableName="person">
+            <column name="first_name" value="John"/>
+            <column name="last_name" value="Doe"/>
+            <column name="email" value="john.doe@example.com"/>
+            <column name="phone" value="+1-555-0101"/>
+        </insert>
+
+        <insert tableName="person">
+            <column name="first_name" value="Jane"/>
+            <column name="last_name" value="Smith"/>
+            <column name="email" value="jane.smith@example.com"/>
+            <column name="phone" value="+1-555-0102"/>
+        </insert>
+
+        <insert tableName="person">
+            <column name="first_name" value="Bob"/>
+            <column name="last_name" value="Johnson"/>
+            <column name="email" value="bob.johnson@example.com"/>
+            <column name="phone" value="+1-555-0103"/>
+        </insert>
+
+        <insert tableName="person">
+            <column name="first_name" value="Alice"/>
+            <column name="last_name" value="Williams"/>
+            <column name="email" value="alice.williams@example.com"/>
+            <column name="phone" value="+1-555-0104"/>
+        </insert>
+        
+    </changeSet>
+    
+</databaseChangeLog>
