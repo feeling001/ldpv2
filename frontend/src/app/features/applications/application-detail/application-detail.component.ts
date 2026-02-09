@@ -6,6 +6,7 @@ import { Application, ApplicationStatus } from '../../../shared/models/applicati
 import { VersionListComponent } from '../../versions/version-list/version-list.component';
 import { ApplicationDeploymentsComponent } from '../application-deployments/application-deployments.component';
 import { ApplicationContactsComponent } from '../application-contacts/application-contacts.component';
+import { ApplicationDependenciesComponent } from '../application-dependencies/application-dependencies.component';
 
 @Component({
   selector: 'app-application-detail',
@@ -14,7 +15,8 @@ import { ApplicationContactsComponent } from '../application-contacts/applicatio
     CommonModule,
     VersionListComponent,
     ApplicationDeploymentsComponent,
-    ApplicationContactsComponent
+    ApplicationContactsComponent,
+    ApplicationDependenciesComponent
   ],
   templateUrl: './application-detail.component.html',
   styleUrls: ['./application-detail.component.scss']
@@ -23,7 +25,7 @@ export class ApplicationDetailComponent implements OnInit {
   application?: Application;
   loading = false;
   error = '';
-  activeTab: 'overview' | 'versions' | 'deployments' | 'contacts' = 'overview';
+  activeTab: 'overview' | 'versions' | 'deployments' | 'contacts' | 'dependencies' = 'overview';
 
   constructor(
     private applicationService: ApplicationService,
@@ -34,7 +36,7 @@ export class ApplicationDetailComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     const tab = this.route.snapshot.queryParamMap.get('tab');
-    if (tab && ['overview', 'versions', 'deployments', 'contacts'].includes(tab)) {
+    if (tab && ['overview', 'versions', 'deployments', 'contacts', 'dependencies'].includes(tab)) {
       this.activeTab = tab as any;
     }
     
@@ -57,7 +59,7 @@ export class ApplicationDetailComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'overview' | 'versions' | 'deployments' | 'contacts'): void {
+  setActiveTab(tab: 'overview' | 'versions' | 'deployments' | 'contacts' | 'dependencies'): void {
     this.activeTab = tab;
     this.router.navigate([], {
       relativeTo: this.route,

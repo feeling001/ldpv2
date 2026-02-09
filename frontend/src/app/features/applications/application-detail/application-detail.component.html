@@ -44,6 +44,12 @@
         (click)="setActiveTab('contacts')">
         👥 Contacts
       </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'dependencies'"
+        (click)="setActiveTab('dependencies')">
+        🔗 Dependencies
+      </button>
     </div>
 
     <!-- Tab Content -->
@@ -112,6 +118,14 @@
           [applicationId]="application.id"
           [applicationName]="application.name">
         </app-application-contacts>
+      </div>
+
+      <!-- Dependencies Tab -->
+      <div *ngIf="activeTab === 'dependencies'">
+        <app-application-dependencies 
+          [applicationId]="application.id"
+          [applicationName]="application.name">
+        </app-application-dependencies>
       </div>
     </div>
   </div>
