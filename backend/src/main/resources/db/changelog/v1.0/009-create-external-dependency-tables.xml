@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="009-create-external-dependency-tables" author="ldpv2-team">
+        
+        <!-- Dependency Types Catalog -->
+        <createTable tableName="dependency_type">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type_name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="is_custom" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- External Dependencies -->
+        <createTable tableName="external_dependency">
+            <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="application_id" type="UUID">
+                <constraints nullable="false"
+                    foreignKeyName="fk_ext_dep_application"
+                    references="application(id)"
+                    deleteCascade="true"/>
+            </column>
+            <column name="dependency_type_id" type="UUID">
+                <constraints nullable="false"
+                    foreignKeyName="fk_ext_dep_type"
+                    references="dependency_type(id)"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="technical_documentation" type="TEXT"/>
+            <column name="validity_start_date" type="DATE"/>
+            <column name="validity_end_date" type="DATE"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Add check constraint for validity dates -->
+        <sql>
+            ALTER TABLE external_dependency 
+            ADD CONSTRAINT check_validity_dates 
+            CHECK (validity_end_date IS NULL OR validity_start_date IS NULL OR validity_end_date >= validity_start_date);
+        </sql>
+
+        <!-- Indexes -->
+        <createIndex tableName="dependency_type" indexName="idx_dep_type_name">
+            <column name="type_name"/>
+        </createIndex>
+
+        <createIndex tableName="external_dependency" indexName="idx_ext_dep_application">
+            <column name="application_id"/>
+        </createIndex>
+
+        <createIndex tableName="external_dependency" indexName="idx_ext_dep_type">
+            <column name="dependency_type_id"/>
+        </createIndex>
+
+        <createIndex tableName="external_dependency" indexName="idx_ext_dep_validity_end">
+            <column name="validity_end_date"/>
+        </createIndex>
+
+        <createIndex tableName="external_dependency" indexName="idx_ext_dep_name">
+            <column name="name"/>
+        </createIndex>
+
+        <!-- Insert default dependency types -->
+        <insert tableName="dependency_type">
+            <column name="type_name" value="WEB_SERVICE"/>
+            <column name="description" value="REST APIs, SOAP services, microservices"/>
+            <column name="is_custom" valueBoolean="false"/>
+        </insert>
+
+        <insert tableName="dependency_type">
+            <column name="type_name" value="DATABASE"/>
+            <column name="description" value="External database connections"/>
+            <column name="is_custom" valueBoolean="false"/>
+        </insert>
+
+        <insert tableName="dependency_type">
+            <column name="type_name" value="CERTIFICATE"/>
+            <column name="description" value="SSL/TLS certificates, authentication certificates"/>
+            <column name="is_custom" valueBoolean="false"/>
+        </insert>
+
+        <insert tableName="dependency_type">
+            <column name="type_name" value="NETWORK_FLOW"/>
+            <column name="description" value="Network connections, firewall rules, VPN tunnels"/>
+            <column name="is_custom" valueBoolean="false"/>
+        </insert>
+
+        <!-- Sample data -->
+        <insert tableName="external_dependency">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Customer Portal' LIMIT 1)"/>
+            <column name="dependency_type_id" valueComputed="(SELECT id FROM dependency_type WHERE type_name = 'WEB_SERVICE' LIMIT 1)"/>
+            <column name="name" value="Payment Gateway API"/>
+            <column name="description" value="External payment processing service"/>
+            <column name="technical_documentation" value="Endpoint: https://api.payment.example.com/v2"/>
+            <column name="validity_start_date" value="2024-01-01"/>
+            <column name="validity_end_date" value="2027-12-31"/>
+        </insert>
+
+        <insert tableName="external_dependency">
+            <column name="application_id" valueComputed="(SELECT id FROM application WHERE name = 'Internal CRM' LIMIT 1)"/>
+            <column name="dependency_type_id" valueComputed="(SELECT id FROM dependency_type WHERE type_name = 'DATABASE' LIMIT 1)"/>
+            <column name="name" value="Legacy Customer Database"/>
+            <column name="description" value="Read-only connection to legacy system"/>
+            <column name="technical_documentation" value="Server: legacy-db.internal:5432"/>
+            <column name="validity_start_date" value="2020-01-01"/>
+            <column name="validity_end_date" value="2026-06-30"/>
+        </insert>
+
+    </changeSet>
+    
+</databaseChangeLog>
