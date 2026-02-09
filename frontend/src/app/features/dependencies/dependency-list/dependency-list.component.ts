@@ -1,29 +1,27 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { DependencyService } from '../dependency.service';
 import { ExternalDependency, DependencyType } from '../../../shared/models/dependency.model';
 import { Page } from '../../../shared/models/environment.model';
 
 @Component({
-  selector: 'app-application-dependencies',
+  selector: 'app-dependency-list',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './application-dependencies.component.html',
-  styleUrls: ['./application-dependencies.component.scss']
+  templateUrl: './dependency-list.component.html',
+  styleUrls: ['./dependency-list.component.scss']
 })
-export class ApplicationDependenciesComponent implements OnInit {
-  @Input() applicationId!: string;
-  @Input() applicationName!: string;
-
+export class DependencyListComponent implements OnInit {
   dependencies: ExternalDependency[] = [];
   dependencyTypes: DependencyType[] = [];
   loading = false;
   error = '';
   
   page = 0;
-  size = 10;
+  size = 20;
+  totalElements = 0;
   totalPages = 0;
 
   selectedTypeId = '';
@@ -43,10 +41,8 @@ export class ApplicationDependenciesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (this.applicationId) {
-      this.loadDependencyTypes();
-      this.loadDependencies();
-    }
+    this.loadDependencyTypes();
+    this.loadDependencies();
   }
 
   loadDependencyTypes(): void {
@@ -62,7 +58,7 @@ export class ApplicationDependenciesComponent implements OnInit {
 
   loadDependencies(): void {
     this.loading = true;
-    const filters: any = { applicationId: this.applicationId };
+    const filters: any = {};
     
     if (this.selectedTypeId) {
       filters.dependencyTypeId = this.selectedTypeId;
@@ -74,6 +70,7 @@ export class ApplicationDependenciesComponent implements OnInit {
     this.dependencyService.getDependencies(filters, this.page, this.size).subscribe({
       next: (data: Page<ExternalDependency>) => {
         this.dependencies = data.content;
+        this.totalElements = data.totalElements;
         this.totalPages = data.totalPages;
         this.loading = false;
       },
@@ -90,9 +87,7 @@ export class ApplicationDependenciesComponent implements OnInit {
   }
 
   createNew(): void {
-    this.router.navigate(['/dependencies/new'], {
-      queryParams: { applicationId: this.applicationId }
-    });
+    this.router.navigate(['/dependencies/new']);
   }
 
   viewDetails(id: string): void {
