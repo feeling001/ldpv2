@@ -1,0 +1,85 @@
+<div class="container">
+  <div class="header">
+    <h1>External Dependencies</h1>
+    <button (click)="createNew()" class="btn-primary">Add Dependency</button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Filter by Type:</label>
+        <select [(ngModel)]="selectedTypeId" (ngModelChange)="onFilterChange()" class="filter-select">
+          <option value="">All Types</option>
+          <option *ngFor="let type of dependencyTypes" [value]="type.id">
+            {{ type.typeName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Filter by Status:</label>
+        <select [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()" class="filter-select">
+          <option *ngFor="let opt of statusOptions" [value]="opt.value">
+            {{ opt.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && dependencies.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Application</th>
+          <th>Status</th>
+          <th>Validity Period</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dep of dependencies">
+          <td><strong>{{ dep.name }}</strong></td>
+          <td>{{ dep.dependencyType.typeName }}</td>
+          <td>{{ dep.application.name }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(dep.status)">
+              {{ getStatusLabel(dep.status) }}
+              <span *ngIf="dep.daysUntilExpiration !== null && dep.daysUntilExpiration !== undefined">
+                ({{ dep.daysUntilExpiration }} days)
+              </span>
+            </span>
+          </td>
+          <td>
+            <div *ngIf="dep.validityStartDate || dep.validityEndDate">
+              {{ dep.validityStartDate ? (dep.validityStartDate | date:'mediumDate') : '-' }}
+              →
+              {{ dep.validityEndDate ? (dep.validityEndDate | date:'mediumDate') : 'Indefinite' }}
+            </div>
+            <div *ngIf="!dep.validityStartDate && !dep.validityEndDate">-</div>
+          </td>
+          <td class="actions">
+            <button (click)="viewDetails(dep.id)" class="btn-sm">View</button>
+            <button (click)="edit(dep.id)" class="btn-sm">Edit</button>
+            <button (click)="delete(dep.id)" class="btn-sm btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && dependencies.length === 0" class="empty">
+    No dependencies found.
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button (click)="previousPage()" [disabled]="page === 0">Previous</button>
+    <span>Page {{ page + 1 }} of {{ totalPages }} ({{ totalElements }} total)</span>
+    <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Next</button>
+  </div>
+</div>
