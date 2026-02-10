@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DependencyService } from '../dependency.service';
+import { DependencyService } from '../../dependencies/dependency.service';
 import { ExternalDependency, DependencyType } from '../../../shared/models/dependency.model';
 import { Page } from '../../../shared/models/environment.model';
 
