@@ -49,6 +49,12 @@ export class MainLayoutComponent implements OnInit {
       color: '#ff9800'
     },
     {
+      title: 'Dependencies',
+      icon: '🔗',
+      route: '/dependencies',
+      color: '#00bcd4'
+    },
+    {
       title: 'Persons',
       icon: '👤',
       route: '/persons',
@@ -77,7 +83,6 @@ export class MainLayoutComponent implements OnInit {
     this.currentUser = this.authService.getCurrentUser();
     this.activeRoute = this.router.url;
     
-    // Listen to route changes to update active route
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {

@@ -126,6 +126,16 @@ export const routes: Routes = [
         ]
       },
       {
+        path: 'dependencies',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/dependencies/dependency-list/dependency-list.component')
+              .then(m => m.DependencyListComponent)
+          }
+        ]
+      },
+      {
         path: 'persons',
         children: [
           {
